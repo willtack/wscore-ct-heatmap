@@ -31,8 +31,8 @@ fileraw=`readlink -e $fileinput`
 input=${fileraw%.nii.gz}
 
 # Location of the left and right Conte surfaces
-leftsurft=/flywheel/v0/misc/32k_ConteAtlas_v2/Conte69.L.midthickness.32k_fs_LR.surf.gii
-rightsurft=/flywheel/v0/32k_ConteAtlas_v2/Conte69.R.midthickness.32k_fs_LR.surf.gii
+leftsurft=/flywheel/v0/resources/32k_ConteAtlas_v2/Conte69.L.midthickness.32k_fs_LR.surf.gii
+rightsurft=/flywheel/v0/resources/32k_ConteAtlas_v2/Conte69.R.midthickness.32k_fs_LR.surf.gii
 
 #Changing Names
 

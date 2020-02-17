@@ -25,10 +25,20 @@ ctxPre=/flywheel/v0/output/${subjectName}_s1_ctxNormToMNI
 ctxSmooth=${ctxPre}.nii.gz
 avg=/flywheel/v0/norm/s1_156controls_average.nii.gz
 stdev=/flywheel/v0/norm/s1_156controls_stdev.nii.gz
-scriptRT=/flywheel/v0/src/
+scriptRT=/flywheel/v0/src
+intermediatesDir=/flywheel/v0/output/intermediates/
+mkdir ${intermediatesDir}
 
 clustersize=250
-fsldir=/usr/share/fsl/5.0.9/bin/
+
+move_intermediatesDir(){
+	mv ${ctxPre}_indivHeatmap_L.shape.gii ${intermediatesDir}
+	mv ${ctxPre}_indivHeatmap_R.shape.gii ${intermediatesDir}
+	mv ${ctxPre}_indivHeatmap_scene.scene ${intermediatesDir}
+	mv ${ctxPre}.nii.gz ${intermediatesDir}
+	mv ${ctxPre}_invZ.nii.gz ${intermediatesDir}
+	mv ${ctxPre}_comp.nii.gz ${intermediatesDir}
+}
 
 ##############################################################################################################################
 
@@ -55,8 +65,8 @@ if [[ $clustersize != 0 ]];then
 	c3d ${ctxPre}_invZ.nii.gz -comp -o ${ctxPre}_comp.nii.gz # ????
 
 	#Change minextent for changing cluster sizes!
-	last=`${fsldir}/cluster -i ${ctxPre}_comp.nii.gz -t 1 --minextent=$clustersize --mm | tail -1 | awk '{print $1}'`
-	first=`${fsldir}/cluster -i ${ctxPre}_comp.nii.gz -t 1 --minextent=$clustersize --mm | head -2 | tail -1 | awk '{print $1}'`
+	last=`${FSLDIR}/cluster -i ${ctxPre}_comp.nii.gz -t 1 --minextent=$clustersize --mm | tail -1 | awk '{print $1}'`
+	first=`${FSLDIR}/cluster -i ${ctxPre}_comp.nii.gz -t 1 --minextent=$clustersize --mm | head -2 | tail -1 | awk '{print $1}'`
 
 	echo
 	echo $first
@@ -67,22 +77,9 @@ if [[ $clustersize != 0 ]];then
 	#Running scripts to generate the L/R surf.nii and generate render
 	#$scriptRT/antsct_heatmap.sh -f ${ctxPre}_indivHeatmap.nii.gz --z_score_scale
 	$scriptRT/antsct_heatmap_2018.sh ${ctxPre}_indivHeatmap.nii.gz 1.75 5
-	rm ${ctxPre}_indivHeatmap_L.shape.gii
-	rm ${ctxPre}_indivHeatmap_R.shape.gii
-	rm ${ctxPre}_indivHeatmap_scene.scene
-	rm ${ctxPre}.nii.gz
-	rm ${ctxPre}_invZ.nii.gz
-	rm ${ctxPre}_comp.nii.gz
-
+	move_intermediates
 else
-
 	#$scriptRT/antsct_heatmap.sh -f  ${ctxPre}_indivHeatmap.nii.gz --z_score_scale
 	$scriptRT/antsct_heatmap_2018.sh ${ctxPre}_indivHeatmap.nii.gz 1.75 5
-	rm ${ctxPre}_indivHeatmap_L.shape.gii
-	rm ${ctxPre}_indivHeatmap_R.shape.gii
-	rm ${ctxPre}_indivHeatmap_scene.scene
-	rm ${ctxPre}.nii.gz
-	rm ${ctxPre}_invZ.nii.gz
-	rm ${ctxPre}_comp.nii.gz
-
+	move_intermediates
 fi

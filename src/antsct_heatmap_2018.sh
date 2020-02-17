@@ -28,7 +28,7 @@ fi
 #Creates variable to point to the template scene
 
 #templateold='/data/grossman/tools/workbench/scripts/templatefiles/neuroprint.scene'
-template='/flywheel/v0/misc/neuroprint_abs.scene'
+template='/flywheel/v0/resources/neuroprint_abs.scene'
 
 # Whenever the scene is edited and saved, it defaults to relative path names. This command removes the relative path names and saves it to a new template to be accessed later
 #cat $templateold | sed 's/\.\.\/\.\.\/\.\.\/\.\.//g'| sed 's/\.\.\///g' > $template
@@ -65,13 +65,17 @@ else
 
 fi
 
+# convert min/max to integers to test if they're greater than zero
+# bash doesn't do floating point operations :(
+testmin=`echo $min | cut -d "." -f 1`
+testmax=`echo $max | cut -d "." -f 1`
 
-if [[ $2 -gt 0 ]]; then
+if [[ $testmin -gt 0 ]]; then
 	min=$2
 	echo $min
 fi
 
-if [[ $3 -gt 0 ]]; then
+if [[ $testmax -gt 0 ]]; then
 	max=$3
 	echo $max
 fi
