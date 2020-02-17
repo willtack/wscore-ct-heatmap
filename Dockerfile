@@ -27,7 +27,7 @@ RUN apt-get update && \
                     nodejs && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-### FSL ####
+# Install FSL
 ENV FSLDIR="/usr/share/fsl"
 RUN apt-get update -qq \
   && apt-get install -y -q --no-install-recommends \
@@ -58,14 +58,24 @@ RUN apt-get update -qq \
 
 ENV PATH="${FSLDIR}/bin:$PATH"
 
-### c3d ###
+# Install c3d
 ENV C3DDIR="/usr/share/c3d"
 MKDIR ${C3DDIR}
 COPY /usr/local/c3d/bin/ ${C3DDIR}/
-
 ENV PATH="${C3DDIR}/bin:$PATH"
 
-### Flywheel SDK ###
+# Install workbench
+apt install connectome-workbench
+
+# Install ANTs 2.2.0 (NeuroDocker build)
+ENV ANTSPATH=/usr/lib/ants
+RUN mkdir -p $ANTSPATH && \
+    curl -sSL "https://dl.dropbox.com/s/2f4sui1z6lcgyek/ANTs-Linux-centos5_x86_64-v2.2.0-0740f91.tar.gz" \
+    | tar -xzC $ANTSPATH --strip-components 1
+ENV PATH=$ANTSPATH:$PATH
+
+
+# Install Flywheel Python SDK
 RUN pip install --no-cache flywheel-sdk
 
 COPY manifest.json ${FLYWHEEL}/manifest.json
@@ -74,4 +84,4 @@ COPY . ${FLYWHEEL}/
 RUN chmod +x ${FLYWHEEL}/*
 
 # Set the entrypoint
-ENTRYPOINT ["/flywheel/v0/run.sh"]
+ENTRYPOINT ["/flywheel/v0/run.py"]

@@ -7,11 +7,9 @@
 if [[ $# -lt 1 ]]; then
 cat <<USAGE
 
-	$0 <input_image> <average_image> <standard_deviation_image>
-				input_ct_image - Path to cortical thickness image normalized to MNI space
-				input_ctx - Path to ??
-				average_image - Normative cortical thickness image
-				standard_deviation_image - Standard deviation of normative cortical thickness image
+	$0 <ctxRaw><subjectName>
+				ctxRaw - Path to cortical thickness image normalized to MNI space
+				subjectName - subject's name, taken from Gear context?
 
 USAGE
 
@@ -22,13 +20,12 @@ fi
 #######------------Sets paths and names-----------##########
 #######-------------------------------------------##########
 ctxRaw=$1
-ctxPre=$2
+subjectName=$2
+ctxPre=/flywheel/v0/output/${subjectName}_s1_ctxNormToMNI
 ctxSmooth=${ctxPre}.nii.gz
-avg=$3
-stdev=$4
-antsRT=/data/grossman/pipedream2018/crossSectional/antsct/ #?????
+avg=/flywheel/v0/norm/s1_156controls_average.nii.gz
+stdev=/flywheel/v0/norm/s1_156controls_stdev.nii.gz
 scriptRT=/flywheel/v0/src/
-indRT=$antsRT/$idtp/normalizedToMNI152/
 
 clustersize=250
 fsldir=/usr/share/fsl/5.0.9/bin/

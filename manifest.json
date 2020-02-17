@@ -1,12 +1,12 @@
 {
-	"name": "degenZ",
+	"name": "HeatMap",
 	"label": "Cortical thickness Z-score plotter",
 	"description": "Produces cortical thickness maps z-normalized to normative thickness data.",
 	"version": "0.0.1_0.0.1",
 	"inputs": {
-		"CorticalThicknessMap": {
+		"CorticalThicknessImage": {
 			"base": "file",
-			"description": "Path patient's cortical thickness map."
+			"description": "Patient's cortical thickness image."
 		}
 	},
 	"config": {
@@ -25,12 +25,12 @@
 	"author": "William Tackett and ",
 	"maintainer": "William Tackett",
 	"license": "BSD-3-Clause",
-	"source": "https://github.com/willtack/degenZ",
-	"url": "https://hub.docker.com/r/willtack/degenZ/tags",
+	"source": "https://github.com/willtack/heat-map",
+	"url": "https://hub.docker.com/r/willtack/heatmap/tags",
 	"custom": {
 		"gear-builder": {
 			"category": "analysis",
-			"image": "willtack/degenZ:0.0.1"
+			"image": "willtack/heatmap:0.0.1"
 		},
 		"flywheel": {
 			"suite": "BrainScienceCenter"

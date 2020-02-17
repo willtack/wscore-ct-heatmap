@@ -35,9 +35,6 @@ NORM_STD="${FLYWHEEL_BASE}/norm/s1_156controls_stdev.nii.gz"
 #                                       --normative_image ${NORMATIVE_IMAGE} \
 #                                       --standard_deviation_image ${STD_IMAGE}
 
-# Z-scoring
-/bin/bash /flywheel/v0/src/_indivHeatmap.sh ${NORM_AVERAGE} \
-																						${NORM_STD} \
-
-
-# Rendering with workbench
+# Run script
+/bin/bash /flywheel/v0/src/_indivHeatmap.sh ${THICKNESS_IMAGE} \
+																						${SUBJECT_NAME}

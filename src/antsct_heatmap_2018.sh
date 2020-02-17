@@ -12,11 +12,11 @@ if [[ $# -lt 1 ]]; then
 cat <<USAGE
 
 	$0 <subject_z.nii.gz> <OPTIONAL min z-score> <OPTIONAL max z-score>
-	
+
 	nifti file with the subjects z-scores produced
 
 	Files Created: R/L.surf.gii, .scene, and .png file of heatmap renders in same directory as input
-	
+
 	Note .scene file (which can be opened with wb_view for modification)
 
 USAGE
@@ -27,11 +27,11 @@ fi
 
 #Creates variable to point to the template scene
 
-templateold='/data/grossman/tools/workbench/scripts/templatefiles/neuroprint.scene'
-template='/data/grossman/tools/workbench/scripts/templatefiles/neuroprint_abs.scene'
+#templateold='/data/grossman/tools/workbench/scripts/templatefiles/neuroprint.scene'
+template='/flywheel/v0/misc/neuroprint_abs.scene'
 
 # Whenever the scene is edited and saved, it defaults to relative path names. This command removes the relative path names and saves it to a new template to be accessed later
-cat $templateold | sed 's/\.\.\/\.\.\/\.\.\/\.\.//g'| sed 's/\.\.\///g' > $template
+#cat $templateold | sed 's/\.\.\/\.\.\/\.\.\/\.\.//g'| sed 's/\.\.\///g' > $template
 
 
 # This is the line in the template scene that will be replaced by the user's new file name. This may need to be edited based on different templates
@@ -52,12 +52,12 @@ if [ -e "$1" ]; then
 	fileinput=$1
 	fileraw=`readlink -e $fileinput`
 	input=${fileraw%.nii.gz}
-	
+
 	# Uses the vol2surf.sh script to generate the L/R surface gifti files
-	/data/grossman/tools/workbench/scripts/vol2surf.sh $fileraw
-	
+	/flywheel/v0/src/vol2surf.sh $fileraw
+
 	# sed command to remove the template files and replace with input files
-	cat $template | sed "s|${toremove}|${input}|g" | sed "s|${alsoremove}|${input}|g" > ${input}_scene.scene 
+	cat $template | sed "s|${toremove}|${input}|g" | sed "s|${alsoremove}|${input}|g" > ${input}_scene.scene
 
 else
 	echo "Error -- requires a valid file name"
@@ -82,4 +82,3 @@ wb_command -metric-palette ${input}_R.shape.gii MODE_USER_SCALE -palette-name FS
 wb_command -show-scene ${input}_scene.scene $scene ${input}_pic.png $width $height
 
 #display ${input}_pic.png &
-
