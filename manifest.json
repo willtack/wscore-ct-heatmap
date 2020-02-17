@@ -1,0 +1,39 @@
+{
+	"name": "degenZ",
+	"label": "Cortical thickness Z-score plotter",
+	"description": "Produces cortical thickness maps z-normalized to normative thickness data.",
+	"version": "0.0.1_0.0.1",
+	"inputs": {
+		"CorticalThicknessMap": {
+			"base": "file",
+			"description": "Path patient's cortical thickness map."
+		}
+	},
+	"config": {
+		"threshold": {
+			"description": "Z-score threshold beyond which to display degeneration.",
+			"type": "number"
+		}
+	},
+	"environment": {
+		"FLYWHEEL": "/flywheel/v0",
+		"LANG": "C.UTF-8",
+		"FSLDIR": "/usr/share/fsl",
+		"FSLOUTPUTTYPE": "NIFTI_GZ"
+},
+	"command": "/flywheel/v0/run",
+	"author": "William Tackett and ",
+	"maintainer": "William Tackett",
+	"license": "BSD-3-Clause",
+	"source": "https://github.com/willtack/degenZ",
+	"url": "https://hub.docker.com/r/willtack/degenZ/tags",
+	"custom": {
+		"gear-builder": {
+			"category": "analysis",
+			"image": "willtack/degenZ:0.0.1"
+		},
+		"flywheel": {
+			"suite": "BrainScienceCenter"
+		}
+	}
+}
