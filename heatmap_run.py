@@ -1,4 +1,7 @@
 #!/usr/local/miniconda/bin/python
+#
+#
+
 import sys
 import logging
 import shutil
@@ -30,14 +33,19 @@ with flywheel.GearContext() as context:
     subject_container = fw.get(session_container.parents['subject'])
     subject_label = subject_container.label
 
+    # Inputs and configs
+    ct_image = PosixPath(context.get_input_path('CorticalThicknessImage'))
+    zthreshold = config.get('zthreshold')
+
 def write_command():
     """Write out command script."""
     with flywheel.GearContext() as context:
         cmd = [
-            '/usr/bin/bash',
+            '/usr/bin/bash -x',
             '/flywheel/v0/src/indivHeatmap.sh',
-             context.get_input('CorticalThicknessImage'),
+             ct_image,
              subject_label
+             zthreshold
         ]
 
     logger.info(' '.join(cmd))
@@ -46,14 +54,18 @@ def write_command():
 
     return run_script.exists()
 
+def cleanup():
+    intermediates_dir = os.path.join(gear_output_dir, 'intermediates')
+    os.system("zip -r {0}/{1}_intermediates.zip {2}".format(gear_output_dir,subject_label, intermediates_dir))
 
 def main():
-
     command_ok = write_command()
     if not command_ok:
-        logger.warning("Critical error while trying to write fmriprep command.")
-        return 1
-
+        logger.warning("Critical error while trying to write run command.")
+        return 1'
+    os.system("chmod +x {0}".format(run_script))
+    os.system(run_script)
+    cleanup()
     return 0
 
 

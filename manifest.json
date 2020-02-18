@@ -10,9 +10,10 @@
 		}
 	},
 	"config": {
-		"threshold": {
+		"zthreshold": {
 			"description": "Z-score threshold beyond which to display degeneration.",
-			"type": "number"
+			"type": "number",
+			"required": false
 		}
 	},
 	"environment": {

@@ -60,9 +60,9 @@ ENV FSLOUTPUTTYPE="NIFTI_GZ"
 
 # Install c3d
 ENV C3DDIR="/usr/share/c3d/bin"
-RUN mkdir ${C3DDIR}
+#RUN mkdir ${C3DDIR}
 COPY resources/c3d/bin ${C3DDIR}/
-ENV PATH="${C3DDIR}/bin:$PATH"
+ENV PATH="${C3DDIR}:$PATH"
 
 # Install workbench
 RUN apt-get update && \
@@ -85,10 +85,10 @@ RUN apt-get install -y python-pip
 RUN pip install --no-cache flywheel-sdk
 
 COPY manifest.json ${FLYWHEEL}/manifest.json
-COPY run.py ${FLYWHEEL}/run.sh
+COPY heatmap_run.py ${FLYWHEEL}/heatmap_run.py
 COPY . ${FLYWHEEL}/
 RUN chmod +x ${FLYWHEEL}/*
 RUN chmod +x ${FLYWHEEL}/src/*
 
 # Set the entrypoint
-ENTRYPOINT ["/flywheel/v0/run.py"]
+ENTRYPOINT ["/flywheel/v0/heatmap_run.py"]
