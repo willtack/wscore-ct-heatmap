@@ -59,10 +59,12 @@ ENV PATH="${FSLDIR}/bin:$PATH"
 ENV FSLOUTPUTTYPE="NIFTI_GZ"
 
 # Install c3d
-ENV C3DDIR="/usr/share/c3d/bin"
-#RUN mkdir ${C3DDIR}
-COPY resources/c3d/bin ${C3DDIR}/
-ENV PATH="${C3DDIR}:$PATH"
+ENV C3DPATH="/opt/convert3d-nightly" \
+    PATH="/opt/convert3d-nightly/bin:$PATH"
+RUN echo "Downloading Convert3D ..." \
+    && mkdir -p /opt/convert3d-nightly \
+    && curl -fsSL --retry 5 https://sourceforge.net/projects/c3d/files/c3d/Nightly/c3d-nightly-Linux-x86_64.tar.gz/download \
+    | tar -xz -C /opt/convert3d-nightly --strip-components 1
 
 # Install workbench
 RUN apt-get update && \
