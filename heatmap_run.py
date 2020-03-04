@@ -65,6 +65,7 @@ def main():
         return 1'
     os.system("chmod +x {0}".format(run_script))
     os.system(run_script)
+    os.system("python src/generate_report.py {0}".format(subject_label))
     cleanup()
     return 0
 
