@@ -3,42 +3,50 @@
 #
 # Author: Will Tackett 3/4/2020
 
-import nilearn
+from nilearn import plotting
 import jinja2
+import sys
+import os
 
-working_dir = os.get_cwd()
+working_dir = os.getcwd()
 output_dir = os.path.join(working_dir, "output")
+
+sid = sys.argv[1]
 
 def create_html_viewer():
         mni_path = os.path.join(working_dir, "resources", "mni152.nii.gz")
-        html_view = nilearn.plotting.view_img(img, threshold=0, bg_img=mni_path,
+        vol_path = os.path.join(output_dir, sid + "_ctxNormToMNI_indivHeatmap.nii.gz")
+        html_view = plotting.view_img(vol_path, threshold=0, bg_img=mni_path,
                                               title="")
         html_view.save_as_html(os.path.join(output_dir, "volume_viewer.html"))
-        viewer_file = "./output/volume_viewer.html"
-        return viewer_file
+
+        # convert to string
+        with open(os.path.join(output_dir, 'volume_viewer.html'),'r') as file:
+            data = file.read()
+
+        return data
 
 def generate_report():
-
+    png_path = sid + "_ctxNormToMNI_indivHeatmap_pic.png"
     title = "Neurodegeneration Heat Map"
     main_section = base_template.render(
             subject_id = sid,
-            png_file = png_file,
+            png_file = png_path,
             html_viewer = create_html_viewer()
     )
 
     # Produce and write the report to file
-    with open(os.path.join(outputdir, "sub-" + sid + "_report.html"), "w") as f:
-        f.write(base_template.render(
-            title=title,
-            sections=main_section
-        ))
+    with open(os.path.join(output_dir, "sub-" + sid + "_report.html"), "w") as f:
+        f.write(main_section)
 
 if __name__ == "__main__":
 
     # Configure Jinja and ready the templates
-    env = Environment(
-        loader=FileSystemLoader(searchpath="templates")
+    env = jinja2.Environment(
+        loader=jinja2.FileSystemLoader(searchpath="templates")
     )
 
     # Assemble the templates we'll use
     base_template = env.get_template("report.html")
+
+    generate_report()
