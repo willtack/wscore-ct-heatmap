@@ -67,24 +67,29 @@ RUN echo "Downloading Convert3D ..." \
     | tar -xz -C /opt/convert3d-nightly --strip-components 1
 
 # Install workbench
-RUN apt-get update && \
-    apt-get install -y connectome-workbench
+#RUN apt-get update && \
+#    apt-get install -y connectome-workbench=1.2.3
+ENV WBPATH=/usr/share/workbench
+RUN    curl -ssL -o ${WBPATH}.zip "https://www.humanconnectome.org/storage/app/media/workbench/workbench-linux64-v1.4.2.zip"
+RUN    unzip ${WBPATH}.zip -d /usr/share
+ENV PATH=$WBPATH/bin_linux64:$PATH
 
 # Install ANTs 2.2.0 (NeuroDocker build)
 ENV ANTSPATH=/usr/share/ants
 RUN mkdir -p $ANTSPATH && \
     curl -sSL "https://dl.dropbox.com/s/2f4sui1z6lcgyek/ANTs-Linux-centos5_x86_64-v2.2.0-0740f91.tar.gz" \
-    | tar -xzC $ANTSPATH --strip-components 1
+   | tar -xzC $ANTSPATH --strip-components 1
 ENV PATH=$ANTSPATH:$PATH
 
 # Installing and setting up miniconda
 RUN curl -sSLO https://repo.continuum.io/miniconda/Miniconda3-4.5.12-Linux-x86_64.sh && \
     bash Miniconda3-4.5.12-Linux-x86_64.sh -b -p /usr/local/miniconda && \
     rm Miniconda3-4.5.12-Linux-x86_64.sh
+ENV PATH=/usr/local/miniconda/bin:$PATH
 
 # Install Flywheel Python SDK
-RUN apt-get install -y python-pip
-RUN pip install --no-cache flywheel-sdk
+RUN pip install --no-cache flywheel-sdk \
+ && pip install --no-cache jinja2
 
 COPY manifest.json ${FLYWHEEL}/manifest.json
 COPY heatmap_run.py ${FLYWHEEL}/heatmap_run.py
