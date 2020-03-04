@@ -10,12 +10,22 @@
 
   <link rel="stylesheet" href="css/styles.css?v=1.0">
 
+  <style>
+  body{
+    background-color: black;
+  }
+  div.elem-image {
+    vertical-align: middle;
+}
+  </style>
 </head>
 
 <body>
-  <div class="elem-image">
-          <img src="{{png_file}}" id="responsive-image">
+  <div class="elem-image" >
+          <img src={{png_file}} id="responsive-image">
   </div>
-  <h3 style="margin-top: 20px"><a href={{html_viewer}} Statistical Map Viewer</a></h3>
+
+  {{html_viewer}}
+
 </body>
 </html
