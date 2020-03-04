@@ -87,9 +87,29 @@ RUN curl -sSLO https://repo.continuum.io/miniconda/Miniconda3-4.5.12-Linux-x86_6
     rm Miniconda3-4.5.12-Linux-x86_64.sh
 ENV PATH=/usr/local/miniconda/bin:$PATH
 
+# Install python packages
+RUN conda install -y python=3.7.1 \
+                     numpy=1.15.4 \
+                     scipy=1.2.0 \
+                     mkl=2019.1 \
+                     mkl-service \
+                     pytest \
+                     scikit-learn=0.20.2 \
+                     matplotlib=2.2.3 \
+                     pandas=0.24.0 \
+                     libxml2=2.9.9 \
+                     graphviz=2.40.1 \
+                     traits=4.6.0 \
+                     zlib; sync &&  \
+    chmod -R a+rX /usr/local/miniconda; sync && \
+    chmod +x /usr/local/miniconda/bin/*; sync && \
+    conda build purge-all; sync && \
+    conda clean -tipsy && sync
+
 # Install Flywheel Python SDK
 RUN pip install --no-cache flywheel-sdk \
- && pip install --no-cache jinja2
+ && pip install --no-cache jinja2 \
+ && pip install --no-cache nilearn
 
 COPY manifest.json ${FLYWHEEL}/manifest.json
 COPY heatmap_run.py ${FLYWHEEL}/heatmap_run.py
