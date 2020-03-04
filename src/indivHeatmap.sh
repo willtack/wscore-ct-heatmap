@@ -24,7 +24,7 @@ fi
 ctxRaw=$1
 subjectName=$2
 zthreshold=$3
-ctxPre=/flywheel/v0/output/${subjectName}_s1_ctxNormToMNI
+ctxPre=/flywheel/v0/output/${subjectName}_ctxNormToMNI
 ctxSmooth=${ctxPre}.nii.gz
 avg=/flywheel/v0/norm/s1_156controls_average.nii.gz
 stdev=/flywheel/v0/norm/s1_156controls_stdev.nii.gz
