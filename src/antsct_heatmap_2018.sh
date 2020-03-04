@@ -28,7 +28,7 @@ fi
 #Creates variable to point to the template scene
 
 #templateold='/data/grossman/tools/workbench/scripts/templatefiles/neuroprint.scene'
-template='/flywheel/v0/resources/neuroprint_abs.scene'
+template='/flywheel/v0/resources/neuroprint.scene'
 
 # Whenever the scene is edited and saved, it defaults to relative path names. This command removes the relative path names and saves it to a new template to be accessed later
 #cat $templateold | sed 's/\.\.\/\.\.\/\.\.\/\.\.//g'| sed 's/\.\.\///g' > $template
@@ -52,6 +52,7 @@ if [ -e "$1" ]; then
 	fileinput=$1
 	fileraw=`readlink -e $fileinput`
 	input=${fileraw%.nii.gz}
+	#based=$(basename $input)
 
 	# Uses the vol2surf.sh script to generate the L/R surface gifti files
 	/flywheel/v0/src/vol2surf.sh $fileraw
