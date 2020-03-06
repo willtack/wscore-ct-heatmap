@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>{{sid}}: Neurodegeneration Heat Map</title>
+  <title>{{subject_id}}: Neurodegeneration Heat Map</title>
   <meta name="description" content="The HTML5 Herald">
   <meta name="author" content="Penn Brain Science Center">
 
@@ -15,17 +15,42 @@
     background-color: black;
   }
   div.elem-image {
-    vertical-align: middle;
-}
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;  }
+
+    h1 {
+      color: white;
+    }
+    body {
+      color: white;
+    }
+    figcaption {
+      font: sans-serif;
+      font-size: 28px;
+      padding: 3px ;
+      text-align: center;
+    }
   </style>
 </head>
 
 <body>
+  <h1>{{subject_id}}: Neurodegeneration Heat Map </h1>
+
+  <figure>
   <div class="elem-image" >
           <img src={{png_file}} id="responsive-image">
   </div>
+  <figcaption>Fig. 1 - surface render </figcaption>
+  </figure>
 
+  <figure>
+  <div style="margin-top: 10%">
   {{html_viewer}}
+  </div>
+  <figcaption> Fig. 2 - volume scroller </figcaption>
+  </figure>
 
 </body>
 </html
