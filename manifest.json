@@ -2,7 +2,7 @@
 	"name": "HeatMap",
 	"label": "Cortical thickness Z-score plotter",
 	"description": "Produces cortical thickness maps z-normalized to normative thickness data.",
-	"version": "0.0.1_0.1.0",
+	"version": "0.1.1_0.1.1",
 	"inputs": {
 		"CorticalThicknessImage": {
 			"base": "file",
@@ -31,7 +31,7 @@
 	"custom": {
 		"gear-builder": {
 			"category": "analysis",
-			"image": "willtack/heatmap:0.1.0"
+			"image": "willtack/heatmap:0.1.1"
 		},
 		"flywheel": {
 			"suite": "BrainScienceCenter"
