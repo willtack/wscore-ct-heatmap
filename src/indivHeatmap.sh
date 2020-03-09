@@ -29,12 +29,15 @@ ctxSmooth=${ctxPre}.nii.gz
 avg=/flywheel/v0/norm/s1_156controls_average.nii.gz
 stdev=/flywheel/v0/norm/s1_156controls_stdev.nii.gz
 scriptRT=/flywheel/v0/src
+atlasDir=/flywheel/v0/resources/32k_ConteAtlas_v2/
 intermediatesDir=/flywheel/v0/output/intermediates/
 mkdir -p ${intermediatesDir}
+htmlDir=/flywheel/v0/output/report
 
 clustersize=250
 
 move_intermediates(){
+	mv ${atlasDir}/Conte69.*.midthickness.32k_fs_LR.surf.gii ${intermediatesDir}
 	mv ${ctxPre}_indivHeatmap_L.shape.gii ${intermediatesDir}
 	mv ${ctxPre}_indivHeatmap_R.shape.gii ${intermediatesDir}
 	mv ${ctxPre}_indivHeatmap_scene.scene ${intermediatesDir}
@@ -42,7 +45,10 @@ move_intermediates(){
 	mv ${ctxPre}_invZ.nii.gz ${intermediatesDir}
 	mv ${ctxPre}_comp.nii.gz ${intermediatesDir}
 }
-
+create_html_zip(){
+	mv *_report.html ${htmlDir}
+	mv *.png ${htmlDir}
+}
 ##############################################################################################################################
 
 # Smooths the Cortical Thickness before generating all of the output needed to make zscores

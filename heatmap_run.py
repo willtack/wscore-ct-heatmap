@@ -56,7 +56,9 @@ def write_command():
 
 def cleanup():
     intermediates_dir = os.path.join(gear_output_dir, 'intermediates')
+    html_dir = os.path.join(gear_output_dir, 'report')
     os.system("zip -r {0}/{1}_intermediates.zip {2}".format(gear_output_dir,subject_label, intermediates_dir))
+    os.system("zip -r {0}/{1}_report.zip {2}".format(gear_output_dir,subject_label, html_dir))
 
 def main():
     command_ok = write_command()
