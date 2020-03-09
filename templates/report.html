@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{subject_id}}: Neurodegeneration Heat Map</title>
   <meta name="description" content="The HTML5 Herald">
   <meta name="author" content="Penn Brain Science Center">
@@ -18,7 +18,13 @@
     display: block;
     margin-left: auto;
     margin-right: auto;
-    width: 50%;  }
+    max-width: 50%;  }
+
+    div.surf {
+      display: inline-block;
+      max-width: 80%;
+      vertical-align: center
+    }
 
     h1 {
       color: white;
@@ -40,16 +46,23 @@
 
   <figure>
   <div class="elem-image" >
-          <img src={{png_file}} id="responsive-image">
+          <img src={{png_file}} style="max-width:100%;height:auto;" id="responsive-image">
   </div>
-  <figcaption>Fig. 1 - surface render </figcaption>
+  <figcaption>Fig. 1 - Surface Render </figcaption>
   </figure>
+
+  <!-- <figure>
+  <div class="surf">
+  {{surf_viewer}}
+  </div>
+  <figcaption> Fig. 2 - Interactive Surface Viewer </figcaption>
+  </figure> -->
 
   <figure>
   <div style="margin-top: 10%">
   {{html_viewer}}
   </div>
-  <figcaption> Fig. 2 - volume scroller </figcaption>
+  <figcaption> Fig. 2 - Volume Scroller </figcaption>
   </figure>
 
 </body>

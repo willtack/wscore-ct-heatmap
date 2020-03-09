@@ -10,21 +10,30 @@ import os
 
 working_dir = os.getcwd()
 output_dir = os.path.join(working_dir, "output")
+inter_dir = os.path.join(output_dir, "intermediates")
 
 sid = sys.argv[1]
 
 def create_html_viewer():
-        mni_path = os.path.join(working_dir, "resources", "mni152.nii.gz")
-        vol_path = os.path.join(output_dir, sid + "_ctxNormToMNI_indivHeatmap.nii.gz")
-        html_view = plotting.view_img(vol_path, threshold=0, bg_img=mni_path,
-                                              title="")
-        html_view.save_as_html(os.path.join(output_dir, "volume_viewer.html"))
+    mni_path = os.path.join(working_dir, "resources", "mni152.nii.gz")
+    vol_path = os.path.join(output_dir, sid + "_ctxNormToMNI_indivHeatmap.nii.gz")
+    html_view = plotting.view_img(vol_path, threshold=0, bg_img=mni_path,
+                                          title="")
+    html_view.save_as_html(os.path.join(output_dir, "volume_viewer.html"))
 
-        # convert to string
-        with open(os.path.join(output_dir, 'volume_viewer.html'),'r') as file:
-            data = file.read()
+    # convert to string
+    with open(os.path.join(output_dir, 'volume_viewer.html'),'r') as file:
+        data = file.read()
+    return data
 
-        return data
+def create_surface_viewer():
+    surf_view = plotting.view_img_on_surf(os.path.join(output_dir, sid + "_ctxNormToMNI_indivHeatmap.nii.gz"),
+                                           black_bg=True,
+                                           surf_mesh='fsaverage5')
+    surf_view.save_as_html(os.path.join(output_dir, 'surf_viewer.html'))
+    with open(os.path.join(output_dir, 'surf_viewer.html'), 'r') as file:
+         data = file.read()
+    return data
 
 def generate_report():
     png_path = sid + "_ctxNormToMNI_indivHeatmap_pic.png"
@@ -32,6 +41,7 @@ def generate_report():
     main_section = base_template.render(
             subject_id = sid,
             png_file = png_path,
+            surf_viewer = create_surface_viewer(),
             html_viewer = create_html_viewer()
     )
 
