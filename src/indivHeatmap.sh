@@ -30,25 +30,21 @@ avg=/flywheel/v0/norm/s1_156controls_average.nii.gz
 stdev=/flywheel/v0/norm/s1_156controls_stdev.nii.gz
 scriptRT=/flywheel/v0/src
 atlasDir=/flywheel/v0/resources/32k_ConteAtlas_v2/
-intermediatesDir=/flywheel/v0/output/intermediates/
-mkdir -p ${intermediatesDir}
-htmlDir=/flywheel/v0/output/report
+resultsDir=/flywheel/v0/output/results/
+mkdir -p ${resultsDir}
 
 clustersize=250
 
-move_intermediates(){
-	mv ${atlasDir}/Conte69.*.midthickness.32k_fs_LR.surf.gii ${intermediatesDir}
-	mv ${ctxPre}_indivHeatmap_L.shape.gii ${intermediatesDir}
-	mv ${ctxPre}_indivHeatmap_R.shape.gii ${intermediatesDir}
-	mv ${ctxPre}_indivHeatmap_scene.scene ${intermediatesDir}
-	mv ${ctxPre}.nii.gz ${intermediatesDir}
-	mv ${ctxPre}_invZ.nii.gz ${intermediatesDir}
-	mv ${ctxPre}_comp.nii.gz ${intermediatesDir}
+move_results(){
+	mv ${atlasDir}/Conte69.*.midthickness.32k_fs_LR.surf.gii ${resultsDir}
+	mv ${ctxPre}_indivHeatmap_L.shape.gii ${resultsDir}
+	mv ${ctxPre}_indivHeatmap_R.shape.gii ${resultsDir}
+	mv ${ctxPre}_indivHeatmap_scene.scene ${resultsDir}
+	mv ${ctxPre}.nii.gz ${resultsDir}
+	mv ${ctxPre}_invZ.nii.gz ${resultsDir}
+	mv ${ctxPre}_comp.nii.gz ${resultsDir}
 }
-create_html_zip(){
-	mv *_report.html ${htmlDir}
-	mv *.png ${htmlDir}
-}
+
 ##############################################################################################################################
 
 # Smooths the Cortical Thickness before generating all of the output needed to make zscores
@@ -86,11 +82,11 @@ if [[ $clustersize != 0 ]];then
 	#Running scripts to generate the L/R surf.nii and generate render
 	#$scriptRT/antsct_heatmap.sh -f ${ctxPre}_indivHeatmap.nii.gz --z_score_scale
 	$scriptRT/antsct_heatmap_2018.sh ${ctxPre}_indivHeatmap.nii.gz 1.75 5
-	move_intermediates
+	move_results
 
 else
 
 	#$scriptRT/antsct_heatmap.sh -f  ${ctxPre}_indivHeatmap.nii.gz --z_score_scale
 	$scriptRT/antsct_heatmap_2018.sh ${ctxPre}_indivHeatmap.nii.gz 1.75 5
-	move_intermediates
+	move_results
 fi

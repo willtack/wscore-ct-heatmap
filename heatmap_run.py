@@ -55,9 +55,12 @@ def write_command():
     return run_script.exists()
 
 def cleanup():
-    intermediates_dir = os.path.join(gear_output_dir, 'intermediates')
+    intermediates_dir = os.path.join(gear_output_dir, 'results')
     html_dir = os.path.join(gear_output_dir, 'report')
-    os.system("zip -r {0}/{1}_intermediates.zip {2}".format(gear_output_dir,subject_label, intermediates_dir))
+    os.system("cp *.html *.nii.gz *.png {}".format(intermediates_dir))
+    os.system("cp *_report.html *.png {}".format(html_dir))
+    os.system("rm *.html")
+    os.system("zip -r {0}/{1}_results.zip {2}".format(gear_output_dir,subject_label, intermediates_dir))
     os.system("zip -r {0}/{1}_report.zip {2}".format(gear_output_dir,subject_label, html_dir))
 
 def main():
