@@ -8,7 +8,7 @@
 if [[ $# -lt 1 ]]; then
 cat <<USAGE
 
-	$0 <ctxRaw> <subjectName> <OPTIONAL zthreshold>
+	$0 <ctxRaw> <subjectName> <OPTIONAL min z-score><OPTIONAL max z-score>
 				ctxRaw - Path to cortical thickness image normalized to MNI space
 				subjectName - subject's name, taken from Gear context?
 				zthreshold - minimum threshold for displaying z-scores
@@ -23,7 +23,8 @@ fi
 #######-------------------------------------------##########
 ctxRaw=$1
 subjectName=$2
-zthreshold=$3
+mins=$3
+max=$4
 ctxPre=/flywheel/v0/output/${subjectName}_ctxNormToMNI
 ctxSmooth=${ctxPre}.nii.gz
 avg=/flywheel/v0/norm/s1_156controls_average.nii.gz
@@ -81,12 +82,19 @@ if [[ $clustersize != 0 ]];then
 
 	#Running scripts to generate the L/R surf.nii and generate render
 	#$scriptRT/antsct_heatmap.sh -f ${ctxPre}_indivHeatmap.nii.gz --z_score_scale
-	$scriptRT/antsct_heatmap_2018.sh ${ctxPre}_indivHeatmap.nii.gz 1.75 5
+	n=0
+	for min in $mins; do
+		bash -x $scriptRT/antsct_heatmap_2018.sh ${ctxPre}_indivHeatmap.nii.gz $min $max
+		n=$((n+1))
+	done
 	move_results
 
 else
 
 	#$scriptRT/antsct_heatmap.sh -f  ${ctxPre}_indivHeatmap.nii.gz --z_score_scale
-	$scriptRT/antsct_heatmap_2018.sh ${ctxPre}_indivHeatmap.nii.gz 1.75 5
+	for min in $mins; do
+		bash -x $scriptRT/antsct_heatmap_2018.sh ${ctxPre}_indivHeatmap.nii.gz $min $max
+		n=$((n+1))
+	done
 	move_results
 fi

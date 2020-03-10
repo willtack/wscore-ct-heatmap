@@ -7,6 +7,7 @@ from nilearn import plotting
 import jinja2
 import sys
 import os
+import glob
 
 working_dir = os.getcwd()
 output_dir = os.path.join(working_dir, "output")
@@ -36,11 +37,19 @@ def create_surface_viewer():
     return data
 
 def generate_report():
-    png_path = sid + "_ctxNormToMNI_indivHeatmap_pic.png"
+    png_list = glob.glob('/flywheel/v0/output/*.png')
+    png_list.sort()
+    thr = []
+    for idx, file in enumerate(png_list):
+        basename = os.path.basename(file)
+        png_list[idx] = basename # change the list item to be the basename
+        thr_item = basename.split("_")[-1].split(".")[0] # parse the threshold value from the filename
+        thr.append(thr_item)
     title = "Neurodegeneration Heat Map"
     main_section = base_template.render(
             subject_id = sid,
-            png_file = png_path,
+            png_list = png_list,
+            thr = thr,
             surf_viewer = create_surface_viewer(),
             html_viewer = create_html_viewer()
     )

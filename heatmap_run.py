@@ -35,7 +35,18 @@ with flywheel.GearContext() as context:
 
     # Inputs and configs
     ct_image = PosixPath(context.get_input_path('CorticalThicknessImage'))
-    zthreshold = config.get('zthreshold')
+    zthresholds = config.get('zthresholds')
+    maxz = config.get('maxz')
+
+    thr_list = zthresholds.split(' ')
+    if len(thr_list) > 3:
+        thr_list=thr_list[0:2] # just pick three if user supplied more than three
+    elif 1 <= len(thr) < 3:
+        thr_list.append(str(thr_list[-1]+1)) # append the last item plus one
+    else:
+        print("Using default thresholds.")
+        thr_list = ['1','2','3']
+    zthresholds = ' '.join(thr_list)
 
 def write_command():
     """Write out command script."""
@@ -44,8 +55,9 @@ def write_command():
             '/usr/bin/bash -x',
             '/flywheel/v0/src/indivHeatmap.sh',
              ct_image,
-             subject_label
-             zthreshold
+             subject_label,
+             \'zthresholds\',
+             maxz
         ]
 
     logger.info(' '.join(cmd))
@@ -55,12 +67,12 @@ def write_command():
     return run_script.exists()
 
 def cleanup():
-    intermediates_dir = os.path.join(gear_output_dir, 'results')
+    results_dir = os.path.join(gear_output_dir, 'results')
     html_dir = os.path.join(gear_output_dir, 'report')
-    os.system("cp *.html *.nii.gz *.png {}".format(intermediates_dir))
+    os.system("cp *.html *.nii.gz *.png {}".format(results_dir))
     os.system("cp *_report.html *.png {}".format(html_dir))
     os.system("rm *.html")
-    os.system("zip -r {0}/{1}_results.zip {2}".format(gear_output_dir,subject_label, intermediates_dir))
+    os.system("zip -r {0}/{1}_results.zip {2}".format(gear_output_dir,subject_label, results_dir))
     os.system("zip -r {0}/{1}_report.zip {2}".format(gear_output_dir,subject_label, html_dir))
 
 def main():

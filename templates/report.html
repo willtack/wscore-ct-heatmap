@@ -39,14 +39,33 @@
       text-align: center;
     }
   </style>
+
+  <script>
+function preLoad() {
+  a1 = new Image; a1.src = '{{png_list[0]}}'; a1.style="max-width:100%;height:auto";
+  a2 = new Image; a2.src = '{{png_list[1]}}'; a2.style="max-width:100%;height:auto";
+  a3 = new Image; a3.src = '{{png_list[2]}}'; a3.style="max-width:100%;height:auto";
+}
+function im(image) {
+  document.getElementById(image[0]).src = eval(image + ".src")
+}
+</script>
 </head>
 
-<body>
+<body onLoad="preLoad()">
   <h1>{{subject_id}}: Neurodegeneration Heat Map </h1>
-
+  <form autocomplete="off" style="float:right;margin-right:15%">
+    <label for="1">{{thr[0]}}</label>
+    <input type="radio" name="1" id="1"onClick="im('a1');" checked>
+    <label for="2">{{thr[1]}}</label>
+    <input type="radio" name="1" id="2" onClick="im('a2');">
+    <label for="3">{{thr[2]}}</label>
+    <input type="radio" name="1" id="3" onClick="im('a3');">
+  </form>
+  <h3 style="color:white;float:right;margin-right:-10%"><form>Threshold toggle (z-score)</h3>
   <figure>
   <div class="elem-image" >
-          <img src={{png_file}} style="max-width:100%;height:auto;" id="responsive-image">
+          <img id="a" src='{{png_list[0]}}' style="max-width:100%;height:auto;" id="responsive-image">
   </div>
   <figcaption>Fig. 1 - Surface Render </figcaption>
   </figure>
@@ -57,7 +76,7 @@
   </div>
   <figcaption> Fig. 2 - Interactive Surface Viewer </figcaption>
   </figure> -->
-
+  <h1 style="float:right;margin-right:4.5%;margin-bottom:-50%;color:white;letter-spacing: 3em">L R </h1>
   <figure>
   <div style="margin-top: 10%">
   {{html_viewer}}
