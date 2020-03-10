@@ -1,6 +1,7 @@
 #!/bin/bash -e
 ####---------Generate png Files of Surface Images--------#######
 ####----Last Updated: 7/30/2018 Authors: Katherine Xu
+####----Date modified for gear: 2/10/2020 Author: Will Tackett
 ####----This script was designed to automate the production of the png images from a template scene. The template scene can be customized and saved in the workbench gui.This is a slimmed down version from 2017 (antsct_heatmap.sh also in /data/grossman/tools/workbench/scripts)
 
 
@@ -43,8 +44,6 @@ alsoremove='s1_100190_20081103_CorticalThicknessNormalizedToMNI152'
 height=880
 width=910
 scene=1
-min=1.75
-max=5
 
 
 #Takes the .nii file. Replaces template files with the outputted files in the template using a sed command.
@@ -68,8 +67,8 @@ fi
 
 # convert min/max to integers to test if they're greater than zero
 # bash doesn't do floating point operations :(
-testmin=`echo $min | cut -d "." -f 1`
-testmax=`echo $max | cut -d "." -f 1`
+testmin=`echo $2 | cut -d "." -f 1`
+testmax=`echo $3 | cut -d "." -f 1`
 
 if [[ $testmin -gt 0 ]]; then
 	min=$2
@@ -81,9 +80,11 @@ if [[ $testmax -gt 0 ]]; then
 	echo $max
 fi
 
-wb_command -metric-palette ${input}_L.shape.gii MODE_USER_SCALE -palette-name FSL -pos-user $min $max
-wb_command -metric-palette ${input}_R.shape.gii MODE_USER_SCALE -palette-name FSL -pos-user $min $max
+if [[ $min -lt $max ]]; then
+	wb_command -metric-palette ${input}_L.shape.gii MODE_USER_SCALE -palette-name FSL -pos-user $min $max
+	wb_command -metric-palette ${input}_R.shape.gii MODE_USER_SCALE -palette-name FSL -pos-user $min $max
 
-wb_command -show-scene ${input}_scene.scene $scene ${input}_pic.png $width $height
+	wb_command -show-scene ${input}_scene.scene $scene ${input}_pic_"${min}".png $width $height
+fi
 
 #display ${input}_pic.png &
