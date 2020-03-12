@@ -112,10 +112,11 @@ RUN pip install --no-cache flywheel-sdk \
  && pip install --no-cache nilearn
 
 COPY manifest.json ${FLYWHEEL}/manifest.json
-COPY heatmap_run.py ${FLYWHEEL}/heatmap_run.py
+COPY run.py ${FLYWHEEL}/run.py
 COPY . ${FLYWHEEL}/
 RUN chmod +x ${FLYWHEEL}/*
+RUN chmod +x ${FLYWHEEL}/run.py
 RUN chmod +x ${FLYWHEEL}/src/*
 
 # Set the entrypoint
-ENTRYPOINT ["/flywheel/v0/heatmap_run.py"]
+ENTRYPOINT ["python /flywheel/v0/run.py"]

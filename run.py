@@ -3,11 +3,10 @@
 #
 
 import sys
+import os
 import logging
 import shutil
-from zipfile import ZipFile
 from pathlib import PosixPath
-from fw_heudiconv.cli import export
 import flywheel
 
 # logging
@@ -35,13 +34,15 @@ with flywheel.GearContext() as context:
 
     # Inputs and configs
     ct_image = PosixPath(context.get_input_path('CorticalThicknessImage'))
+    ct_image_path = ct_image.as_posix()
     zthresholds = config.get('zthresholds')
     maxz = config.get('maxz')
 
     thr_list = zthresholds.split(' ')
+    print(thr_list)
     if len(thr_list) > 3:
         thr_list=thr_list[0:2] # just pick three if user supplied more than three
-    elif 1 <= len(thr) < 3:
+    elif 1 <= len(thr_list) < 3:
         thr_list.append(str(thr_list[-1]+1)) # append the last item plus one
     else:
         print("Using default thresholds.")
@@ -52,12 +53,12 @@ def write_command():
     """Write out command script."""
     with flywheel.GearContext() as context:
         cmd = [
-            '/usr/bin/bash -x',
+            '/bin/bash -x',
             '/flywheel/v0/src/indivHeatmap.sh',
-             ct_image,
-             subject_label,
-             \'zthresholds\',
-             maxz
+             ct_image_path,
+             subject_label, "'",
+             zthresholds, "'",
+             str(maxz)
         ]
 
     logger.info(' '.join(cmd))
@@ -68,18 +69,20 @@ def write_command():
 
 def cleanup():
     results_dir = os.path.join(gear_output_dir, 'results')
-    html_dir = os.path.join(gear_output_dir, 'report')
+    html_dir = os.path.join(gear_output_dir, subject_label + '_report')
     os.system("cp *.html *.nii.gz *.png {}".format(results_dir))
     os.system("cp *_report.html *.png {}".format(html_dir))
     os.system("rm *.html")
     os.system("zip -r {0}/{1}_results.zip {2}".format(gear_output_dir,subject_label, results_dir))
     os.system("zip -r {0}/{1}_report.zip {2}".format(gear_output_dir,subject_label, html_dir))
+    os.system("rm -rf heatmap_run.sh results *_report")
+
 
 def main():
     command_ok = write_command()
     if not command_ok:
         logger.warning("Critical error while trying to write run command.")
-        return 1'
+        return 1
     os.system("chmod +x {0}".format(run_script))
     os.system(run_script)
     os.system("python src/generate_report.py {0}".format(subject_label))

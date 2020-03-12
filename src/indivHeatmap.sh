@@ -37,7 +37,7 @@ mkdir -p ${resultsDir}
 clustersize=250
 
 move_results(){
-	mv ${atlasDir}/Conte69.*.midthickness.32k_fs_LR.surf.gii ${resultsDir}
+	cp ${atlasDir}/Conte69.*.midthickness.32k_fs_LR.surf.gii ${resultsDir}
 	mv ${ctxPre}_indivHeatmap_L.shape.gii ${resultsDir}
 	mv ${ctxPre}_indivHeatmap_R.shape.gii ${resultsDir}
 	mv ${ctxPre}_indivHeatmap_scene.scene ${resultsDir}

@@ -2,8 +2,11 @@
 	"name": "heatmap",
 	"label": "HeatMap: Plots z-scores of cortical thickness relative to normative data",
 	"description": "Produces cortical thickness maps z-normalized to normative thickness data.",
-	"version": "0.0.2_0.2.1",
+	"version": "0.0.3_0.2.3",
 	"inputs": {
+			"api_key": {
+				"base": "api-key"
+			},
 		"CorticalThicknessImage": {
 			"base": "file",
 			"description": "Patient's cortical thickness image."
@@ -12,7 +15,7 @@
 	"config": {
 		"zthresholds": {
 			"description": "space-separated list of z-score thresholds",
-			"type": "number"
+			"type": "string"
 		},
 		"maxz": {
 			"description": "maximum z-score to display",
@@ -20,21 +23,20 @@
 		}
 	},
 	"environment": {
-		"FLYWHEEL": "/flywheel/v0",
-		"LANG": "C.UTF-8",
-		"FSLDIR": "/usr/share/fsl",
-		"FSLOUTPUTTYPE": "NIFTI_GZ"
-},
-	"command": "/flywheel/v0/run",
-	"author": "William Tackett and ",
-	"maintainer": "William Tackett",
+		"PYTHONNOUSERSITE": "1",
+		"PYTHON_PIP_VERSION": "20.0.2",
+		"PYTHON_VERSION": "3.7.1"
+	},
+	"command": "python /flywheel/v0/run.py",
+	"author": "Katherine Xu and Will Tackett",
+	"maintainer": "Will Tackett",
 	"license": "BSD-3-Clause",
 	"source": "https://github.com/willtack/heat-map",
 	"url": "https://hub.docker.com/r/willtack/heatmap/tags",
 	"custom": {
 		"gear-builder": {
 			"category": "analysis",
-			"image": "willtack/heatmap:0.2.1"
+			"image": "willtack/heatmap:0.2.3"
 		},
 		"flywheel": {
 			"suite": "BrainScienceCenter"
