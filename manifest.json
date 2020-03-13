@@ -2,7 +2,7 @@
 	"name": "heatmap",
 	"label": "HeatMap: Plots z-scores of cortical thickness relative to normative data",
 	"description": "Produces cortical thickness maps z-normalized to normative thickness data.",
-	"version": "0.0.3_0.2.3.",
+	"version": "0.0.3_0.2.3b",
 	"inputs": {
 			"api_key": {
 				"base": "api-key"
@@ -36,7 +36,7 @@
 	"custom": {
 		"gear-builder": {
 			"category": "analysis",
-			"image": "willtack/heatmap:0.2.3"
+			"image": "willtack/heatmap:0.2.3b"
 		},
 		"flywheel": {
 			"suite": "BrainScienceCenter"

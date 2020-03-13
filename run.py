@@ -70,6 +70,8 @@ def write_command():
 def cleanup():
     results_dir = os.path.join(gear_output_dir, 'results')
     html_dir = os.path.join(gear_output_dir, subject_label + '_report')
+    os.mkdir(html_dir)
+    os.chdir(gear_output_dir)
     os.system("cp *.html *.nii.gz *.png {}".format(results_dir))
     os.system("cp *_report.html *.png {}".format(html_dir))
     os.system("rm *.html")

@@ -93,6 +93,7 @@ RUN conda install -y python=3.7.1 \
                      scipy=1.2.0 \
                      mkl=2019.1 \
                      mkl-service \
+                     pathlib=1.0.1 \
                      pytest \
                      scikit-learn=0.20.2 \
                      matplotlib=2.2.3 \
@@ -109,7 +110,8 @@ RUN conda install -y python=3.7.1 \
 # Install Flywheel Python SDK
 RUN pip install --no-cache flywheel-sdk \
  && pip install --no-cache jinja2 \
- && pip install --no-cache nilearn
+ && pip install --no-cache nilearn \
+ && pip install --no-cache pathlib
 
 COPY manifest.json ${FLYWHEEL}/manifest.json
 COPY run.py ${FLYWHEEL}/run.py
