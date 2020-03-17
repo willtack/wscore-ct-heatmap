@@ -91,5 +91,9 @@ RUN chmod +x ${FLYWHEEL}/*
 RUN chmod +x ${FLYWHEEL}/run.py
 RUN chmod +x ${FLYWHEEL}/src/*
 
+# ENV preservation for Flywheel Engine
+RUN env -u HOSTNAME -u PWD | \
+  awk -F = '{ print "export " $1 "=\"" $2 "\"" }' > ${FLYWHEEL}/docker-env.sh
+
 # Set the entrypoint
 ENTRYPOINT ["/flywheel/v0/run.py"]
