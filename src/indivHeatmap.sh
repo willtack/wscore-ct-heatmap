@@ -30,7 +30,7 @@ ctxSmooth=${ctxPre}.nii.gz
 avg=/flywheel/v0/norm/s1_156controls_average.nii.gz
 stdev=/flywheel/v0/norm/s1_156controls_stdev.nii.gz
 scriptRT=/flywheel/v0/src
-atlasDir=/flywheel/v0/resources/32k_ConteAtlas_v2/
+atlasDir=/flywheel/v0/resources/32k_ConteAtlas_v2
 resultsDir=/flywheel/v0/output/results/
 mkdir -p ${resultsDir}
 

@@ -1,6 +1,4 @@
-#!/usr/local/miniconda/bin/python
-#
-#
+import sys; print(sys.path)
 
 import sys
 import os
@@ -44,7 +42,7 @@ with flywheel.GearContext() as context:
         thr_list=thr_list[0:2] # just pick three if user supplied more than three
     elif 1 <= len(thr_list) < 3:
         thr_list.append(str(thr_list[-1]+1)) # append the last item plus one
-    else:
+    elif len(thr_list) != 3:
         print("Using default thresholds.")
         thr_list = ['1','2','3']
     zthresholds = ' '.join(thr_list)
