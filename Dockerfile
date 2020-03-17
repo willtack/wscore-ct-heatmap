@@ -82,7 +82,9 @@ ENV PATH=$ANTSPATH:$PATH
 RUN pip install --no-cache flywheel-sdk \
  && pip install --no-cache jinja2 \
  && pip install --no-cache nilearn \
- && pip install --no-cache pathlib
+ && pip install --no-cache pathlib \
+ && pip install --no-cache matplotlib \
+ && pip install --no-cache pytest
 
 COPY manifest.json ${FLYWHEEL}/manifest.json
 COPY run.py ${FLYWHEEL}/run.py
@@ -96,4 +98,4 @@ RUN env -u HOSTNAME -u PWD | \
   awk -F = '{ print "export " $1 "=\"" $2 "\"" }' > ${FLYWHEEL}/docker-env.sh
 
 # Set the entrypoint
-ENTRYPOINT ["/flywheel/v0/run.py"]
+ENTRYPOINT ["python /flywheel/v0/run.py"]
