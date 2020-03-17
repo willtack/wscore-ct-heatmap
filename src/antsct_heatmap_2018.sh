@@ -45,6 +45,17 @@ height=880
 width=910
 scene=1
 
+removeDecimal(){
+	DOT='.'
+	if [[ "$1" != *${DOT}* ]]; then
+		return $1
+	else
+		left=$(echo $1 | cut -d '.' -f 1)
+		right=$(echo $1 | cut -d '.' -f 2)
+		new="${left}${right}"
+		return $new
+	fi
+}
 
 #Takes the .nii file. Replaces template files with the outputted files in the template using a sed command.
 if [ -e "$1" ]; then
@@ -80,11 +91,13 @@ if [[ $testmax -gt 0 ]]; then
 	echo $max
 fi
 
-if [[ $min -lt $max ]]; then
+if (( $(echo "$min < $max" | bc -l) )); then
 	wb_command -metric-palette ${input}_L.shape.gii MODE_USER_SCALE -palette-name FSL -pos-user $min $max
 	wb_command -metric-palette ${input}_R.shape.gii MODE_USER_SCALE -palette-name FSL -pos-user $min $max
 
-	wb_command -show-scene ${input}_scene.scene $scene ${input}_pic_"${min}".png $width $height
+	removeDecimal $min
+	label=$(echo $?)
+	wb_command -show-scene ${input}_scene.scene $scene ${input}_pic_"${label}".png $width $height
 fi
 
 #display ${input}_pic.png &
