@@ -78,13 +78,47 @@ RUN mkdir -p $ANTSPATH && \
    | tar -xzC $ANTSPATH --strip-components 1
 ENV PATH=$ANTSPATH:$PATH
 
+# Installing and setting up miniconda
+#RUN curl -sSLO https://repo.continuum.io/miniconda/Miniconda3-4.5.12-Linux-x86_64.sh && \
+#    bash Miniconda3-4.5.12-Linux-x86_64.sh -b -p /usr/local/miniconda && \
+#    rm Miniconda3-4.5.12-Linux-x86_64.sh
+#ENV PATH=/usr/local/miniconda/bin:$PATH
+
 # Install python packages
+#RUN conda install -y python=3.7.1 \
+#                     numpy=1.15.4 \
+#                     scipy=1.2.0 \
+#                     mkl=2019.1 \
+#                     mkl-service \
+#                     pathlib=1.0.1 \
+#                     pytest \
+#                     scikit-learn=0.20.2 \
+#                     matplotlib=2.2.3 \
+#                     pandas=0.24.0 \
+#                     libxml2=2.9.9 \
+#                     graphviz=2.40.1 \
+#                     traits=4.6.0 \
+#                     zlib; sync &&  \
+#    chmod -R a+rX /usr/local/miniconda; sync && \
+#    chmod +x /usr/local/miniconda/bin/*; sync && \
+#    conda build purge-all; sync && \
+#    conda clean -tipsy && sync
+
+#RUN pip install --no-cache mkl \
+#    pip install --no-cache mkl-service \
+#    pip install --no-cache pathlib \
+#    pip install --no-cache pytest \
+#    pip install --no-cache libxml2 \
+#    pip install --no-cache graphviz \
+#    pip install --no-cache traits \
+#    pip install --no-cache zlib
+
+
+# Install Flywheel Python SDK
 RUN pip install --no-cache flywheel-sdk \
  && pip install --no-cache jinja2 \
  && pip install --no-cache nilearn \
- && pip install --no-cache pathlib \
- && pip install --no-cache pytest \
- && pip install --no-cache matplotlib
+ && pip install --no-cache pathlib
 
 COPY manifest.json ${FLYWHEEL}/manifest.json
 COPY run.py ${FLYWHEEL}/run.py
@@ -93,9 +127,5 @@ RUN chmod +x ${FLYWHEEL}/*
 RUN chmod +x ${FLYWHEEL}/run.py
 RUN chmod +x ${FLYWHEEL}/src/*
 
-# ENV preservation for Flywheel Engine
-RUN env -u HOSTNAME -u PWD | \
-  awk -F = '{ print "export " $1 "=\"" $2 "\"" }' > ${FLYWHEEL}/docker-env.sh
-
 # Set the entrypoint
-ENTRYPOINT ["/usr/local/bin/python /flywheel/v0/run.py"]
+ENTRYPOINT ["/flywheel/v0/run.py"]
