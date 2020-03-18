@@ -17,17 +17,22 @@
     .orientation {
       position: absolute;
       top: 8px;
-      right:16px;
+      right: 42px;
       color: white;
+      letter-spacing: 3em
+    }
+    .thresh {
+      position: absolute;
+      top:20px;
+      right: 96px
     }
     body{
       background-color: black;
     }
     div.elem-image {
       display: block;
-      margin-left: auto;
-      margin-right: auto;
-      max-width: 50%;  }
+      margin: 0 auto;
+      max-width: 72%;  }
 
     div.surf {
       display: inline-block;
@@ -59,20 +64,25 @@ function preLoad() {
 function im(image) {
   document.getElementById(image[0]).src = eval(image + ".src")
 }
+
+  window.fitText( document.getElementById("responsive_headline") );
 </script>
 </head>
 
 <body onLoad="preLoad()">
   <h1>{{subject_id}}: Neurodegeneration Heat Map </h1>
-  <form autocomplete="off" style="float:right;margin-right:15%">
-    <label for="1">{{thr[0]}}</label>
-    <input type="radio" name="1" id="1"onClick="im('a1');" checked>
-    <label for="2">{{thr[1]}}</label>
-    <input type="radio" name="1" id="2" onClick="im('a2');">
-    <label for="3">{{thr[2]}}</label>
-    <input type="radio" name="1" id="3" onClick="im('a3');">
-  </form>
-  <h3 style="color:white;float:right;margin-right:-10%"><form>Threshold toggle (z-score)</h3>
+  <div class="container"
+    <form autocomplete="off" style="float:right;margin-right:15%">
+      <label for="1">{{thr[0]}}</label>
+      <input type="radio" name="1" id="1"onClick="im('a1');" checked>
+      <label for="2">{{thr[1]}}</label>
+      <input type="radio" name="1" id="2" onClick="im('a2');">
+      <label for="3">{{thr[2]}}</label>
+      <input type="radio" name="1" id="3" onClick="im('a3');">
+    </form>
+    <p id="fittext">Threshold toggle (z-score)</p>
+  </div>
+
   <figure>
   <div class="elem-image" >
           <img id="a" src='{{png_list[0]}}' style="max-width:100%;height:auto;" id="responsive-image">
@@ -87,7 +97,8 @@ function im(image) {
   <figcaption> Fig. 2 - Interactive Surface Viewer </figcaption>
   </figure> -->
   <div class="container">
-    <div class="orientation">L R </div>
+    <!-- <div class="orientation">L R </div> -->
+    <p id="fittext">L R </p>
     <figure>
     <div style="margin-top: 10%">
     {{html_viewer}}
@@ -95,5 +106,10 @@ function im(image) {
     <figcaption> Fig. 2 - Volume Scroller </figcaption>
     </figure>
   </div>
+
+  <script src="fittext.js"></script>
+  <script type="text/javascript">
+    fitText(document.getElementById('fittext'), 1.2)
+  </script>
 </body>
 </html
