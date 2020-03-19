@@ -92,8 +92,8 @@ if [[ $testmax -gt 0 ]]; then
 fi
 
 if (( $(echo "$min < $max" | bc -l) )); then
-	wb_command -metric-palette ${input}_L.shape.gii MODE_USER_SCALE -palette-name FSL -pos-user $min $max
-	wb_command -metric-palette ${input}_R.shape.gii MODE_USER_SCALE -palette-name FSL -pos-user $min $max
+	wb_command -metric-palette ${input}_L.shape.gii MODE_USER_SCALE -palette-name FSL -thresholding THRESHOLD_TYPE_NORMAL THRESHOLD_TEST_SHOW_INSIDE $min $max -pos-user $min $max
+	wb_command -metric-palette ${input}_R.shape.gii MODE_USER_SCALE -palette-name FSL -thresholding THRESHOLD_TYPE_NORMAL THRESHOLD_TEST_SHOW_INSIDE $min $max -pos-user $min $max
 
 	removeDecimal $min
 	label=$(echo $?)
