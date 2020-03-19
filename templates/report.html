@@ -26,6 +26,13 @@
       top:20px;
       right: 96px
     }
+    figcaption.orient {
+    margin-right: 5%;
+    text-align: right;
+    letter-spacing: 3em
+    }
+
+
     body{
       background-color: black;
     }
@@ -97,18 +104,18 @@ function im(image) {
   <figcaption> Fig. 2 - Interactive Surface Viewer </figcaption>
   </figure> -->
   <div class="container">
+    <figcaption class="orient"> L R </figcaption>
     <!-- <div class="orientation">L R </div> -->
-    <p id="fittext">L R </p>
+    <!-- <p id="fittext">L R </p> -->
     <figure>
-    <div style="margin-top: 10%">
+    <div>
     {{html_viewer}}
     </div>
     <figcaption> Fig. 2 - Volume Scroller </figcaption>
     </figure>
   </div>
 
-  <script src="fittext.js"></script>
-  <script type="text/javascript">
+  <script type="text/javascript" src="fittext.js">
     fitText(document.getElementById('fittext'), 1.2)
   </script>
 </body>
