@@ -14,7 +14,6 @@ output_dir = os.path.join(working_dir, "output")
 inter_dir = os.path.join(output_dir, "intermediates")
 
 sid = sys.argv[1]
-thr_list = sys.argv[2]
 
 def create_html_viewer():
     mni_path = os.path.join(working_dir, "resources", "mni152.nii.gz")
@@ -45,7 +44,7 @@ def generate_report():
         basename = os.path.basename(file)
         png_list[idx] = basename # change the list item to be the basename
         thr_item = basename.split("_")[-1].split(".")[0] # parse the threshold value from the filename
-         if len(thr_item) > 1:
+        if len(thr_item) > 1:
             thr_item = thr_item[0] + '.' + thr_item[1:]
         else:
             thr_item = thr_item[0] + '.' + '0'

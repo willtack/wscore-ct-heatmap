@@ -73,6 +73,7 @@ def cleanup():
     os.system("cp *.html *.nii.gz *.png {}".format(results_dir))
     os.system("mv results {}".format(subject_label + '_results'))
     os.system("cp *_report.html *.png {}".format(html_dir))
+    os.system("cp ../templates/fittext.js {}".format(html_dir))
     os.system("rm *.html")
     os.system("zip -r {0}/{1}_results.zip {2}".format(gear_output_dir,subject_label, subject_label + '_results' ))
     os.system("zip -r {0}/{1}_report.zip {2}".format(gear_output_dir,subject_label, subject_label + '_report'))
