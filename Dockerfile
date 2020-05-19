@@ -21,6 +21,7 @@ RUN apt-get update && \
                     zip \
                     unzip \
                     nano \
+                    default-jdk \
                     git && \
     curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
     apt-get install -y --no-install-recommends \

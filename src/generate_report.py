@@ -16,16 +16,10 @@ inter_dir = os.path.join(output_dir, "intermediates")
 sid = sys.argv[1]
 
 def create_html_viewer():
-    mni_path = os.path.join(working_dir, "resources", "mni152.nii.gz")
     vol_path = os.path.join(output_dir, sid + "_ctxNormToMNI_indivHeatmap.nii.gz")
-    html_view = plotting.view_img(vol_path, threshold=0, bg_img=mni_path,
-                                          title="")
-    html_view.save_as_html(os.path.join(output_dir, "volume_viewer.html"))
-
-    # convert to string
-    with open(os.path.join(output_dir, 'volume_viewer.html'),'r') as file:
-        data = file.read()
-    return data
+    os.system("bash -x /flywheel/v0/src/buildViewer.sh {}".format(vol_path))
+    viewer_file = "volume_viewer.html"
+    return viewer_file
 
 def create_surface_viewer():
     surf_view = plotting.view_img_on_surf(os.path.join(output_dir, sid + "_ctxNormToMNI_indivHeatmap.nii.gz"),
@@ -55,7 +49,7 @@ def generate_report():
             png_list = png_list,
             thr = thr,
             surf_viewer = create_surface_viewer(),
-            html_viewer = create_html_viewer()
+            volume_viewer = create_html_viewer()
     )
 
     # Produce and write the report to file
