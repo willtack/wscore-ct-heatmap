@@ -18,12 +18,12 @@ sid = sys.argv[1]
 def create_html_viewer():
     vol_path = os.path.join(output_dir, sid + "_ctxNormToMNI_indivHeatmap.nii.gz")
     os.system("bash -x /flywheel/v0/src/buildViewer.sh {}".format(vol_path))
-    viewer_file = "volume_viewer.html"
+    viewer_file = './volume_viewer.html'
     return viewer_file
 
 def create_surface_viewer():
     surf_view = plotting.view_img_on_surf(os.path.join(output_dir, sid + "_ctxNormToMNI_indivHeatmap.nii.gz"),
-                                           black_bg=True,
+                                           black_bg=False,
                                            surf_mesh='fsaverage5')
     surf_view.save_as_html(os.path.join(output_dir, 'surf_viewer.html'))
     with open(os.path.join(output_dir, 'surf_viewer.html'), 'r') as file:
@@ -64,6 +64,6 @@ if __name__ == "__main__":
     )
 
     # Assemble the templates we'll use
-    base_template = env.get_template("report.html")
+    base_template = env.get_template("report2.html")
 
     generate_report()
