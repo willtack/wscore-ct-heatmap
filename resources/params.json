@@ -16,7 +16,7 @@
     "showRuler":false,
     "radiological":true,
     "smoothDisplay":false,
-    "showControls":false,
+    "showControls":true,
     "showControlBar":false,
     "combineParametric":false,
     "coordinate":[0.0,-18.0,18.0],
