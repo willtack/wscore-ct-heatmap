@@ -61,8 +61,6 @@ function preLoad() {
 function im(image) {
   document.getElementById(image[0]).src = eval(image + ".src")
 }
-
-  window.fitText( document.getElementById("responsive_headline") );
 </script>
 
 </head>
@@ -91,14 +89,10 @@ function im(image) {
   <div class="container" style="margin-top: 3%">
     <figure>
       <div class="resp-container">
-          <iframe class="resp-iframe" src={{volume_viewer}} allowfullscreen></iframe>
+          <iframe class="resp-iframe" src="{{volume_viewer}}" allowfullscreen></iframe>
       </div>
     <figcaption style="margin-top:-5%"> Fig. 2 - Volume Scroller </figcaption>
     </figure>
   </div>
-
-  <script type="text/javascript" src="fittext.js">
-    fitText(document.getElementById('fittext'), 1.2)
-  </script>
 </body>
 </html
