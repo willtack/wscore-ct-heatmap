@@ -79,7 +79,7 @@ def cleanup():
     os.chdir(html_dir)
     os.system("zip -r {0}/{1}_report.html.zip {2}".format(gear_output_dir,subject_label, './*'))
     os.chdir(gear_output_dir)
-    os.system("rm -rf heatmap_run.sh results *_results *_report *.gii")
+    os.system("rm -rf heatmap_run.sh results *_results *_report *.gii *.png")
 
 
 def main():
