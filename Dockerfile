@@ -1,10 +1,6 @@
 FROM python:3.7
 MAINTAINER Will Tackett <william.tackett@pennmedicine.upenn.edu>
 
-# Make directory for flywheel spec (v0)
-ENV FLYWHEEL /flywheel/v0
-RUN mkdir -p ${FLYWHEEL}
-
 # Prepare environment
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -67,10 +63,10 @@ ENV FSLOUTPUTTYPE="NIFTI_GZ"
 #    | tar -xz -C /opt/convert3d-nightly --strip-components 1
 
 # Install workbench
-ENV WBPATH=/usr/share/workbench
-RUN    curl -ssL -o ${WBPATH}.zip "https://www.humanconnectome.org/storage/app/media/workbench/workbench-linux64-v1.4.2.zip"
-RUN    unzip ${WBPATH}.zip -d /usr/share
-ENV PATH=$WBPATH/bin_linux64:$PATH
+#ENV WBPATH=/usr/share/workbench
+#RUN    curl -ssL -o ${WBPATH}.zip "https://www.humanconnectome.org/storage/app/media/workbench/workbench-linux64-v1.4.2.zip"
+#RUN    unzip ${WBPATH}.zip -d /usr/share
+#ENV PATH=$WBPATH/bin_linux64:$PATH
 
 # Install ANTs 2.2.0 (NeuroDocker build)
 ENV ANTSPATH=/usr/share/ants
@@ -80,29 +76,34 @@ RUN mkdir -p $ANTSPATH && \
 ENV PATH=$ANTSPATH:$PATH
 
 # Install python packages
-RUN pip install --no-cache flywheel-sdk \
- && pip install --no-cache jinja2 \
- && pip install --no-cache nilearn \
- && pip install --no-cache pathlib \
- && pip install --no-cache matplotlib \
- && pip install --no-cache pytest
+RUN pip install --no-cache flywheel-sdk==12.4.0 \
+ && pip install --no-cache jinja2==2.10 \
+ && pip install --no-cache nilearn==0.5.2 \
+ && pip install --no-cache pathlib==1.0.1 \
+ && pip install --no-cache matplotlib==3.03 \
+ && pip install --no-cache antspyx==0.2.7 \
+ && pip install --no-cache pytest==4.3.1 \
+ && pip install --no-cache scikit-learn==0.22 \
+ && pip install --no-cache pandas==1.2.3 \
+ && pip install --no-cache numpy==1.20.1
 
- ENV C3DDIR="/usr/share/c3d/bin"
- #RUN mkdir ${C3DDIR}
- COPY resources/c3d/bin ${C3DDIR}/
- ENV PATH="${C3DDIR}:$PATH"
 
-COPY manifest.json ${FLYWHEEL}/manifest.json
-COPY run.py ${FLYWHEEL}/run.py
-COPY . ${FLYWHEEL}/
-RUN chmod +x ${FLYWHEEL}/*
-RUN chmod +x ${FLYWHEEL}/run.py
-RUN chmod +x ${FLYWHEEL}/src/*
 
-# ENV preservation for Flywheel Engine
-RUN env -u HOSTNAME -u PWD | \
-  awk -F = '{ print "export " $1 "=\"" $2 "\"" }' > ${FLYWHEEL}/docker-env.sh
-RUN chmod +x ${FLYWHEEL}/docker-env.sh
+# ENV C3DDIR="/usr/share/c3d/bin"
+# #RUN mkdir ${C3DDIR}
+# COPY resources/c3d/bin ${C3DDIR}/
+# ENV PATH="${C3DDIR}:$PATH"
+
+RUN mkdir /opt/scripts
+COPY run.py /opt/scripts/run.py
+COPY generate_report.py /opt/scripts/generate_report.py
+RUN chmod +x /opt/scripts/*
+
+RUN mkdir -p /opt/labelset
+COPY labelset /opt/labelset
+
+RUN mkdir -p /opt/html_templates
+COPY html_templates /opt/html_templates
 
 # Set the entrypoint
-ENTRYPOINT ["python /flywheel/v0/run.py"]
+ENTRYPOINT ["python /opt/scripts/run.py"]

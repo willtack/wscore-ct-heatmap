@@ -1,4 +1,0 @@
-10/23/2018 (CO)
-Made using 2018_calcavstdev.sh in /data/grossman/tools/workbench/scripts with 156controls.txt
-This was done after realizing applying inverseWarp to MNI files, instead of warp to MNI for normalizing all images
-Updated indivHeatmap.sh located in /data/grossman/pipedream2018/crossSectional/scripts to point to new files
