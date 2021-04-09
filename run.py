@@ -8,7 +8,7 @@ Inputs
         ct_image_file (str): path to cortical thickness file in subject space
         t1_image_file (str): path to T1 image
         patient_age (float): age of patient in years
-        threshold (float): lower limit to display w-scores in render
+        thresholds (str): space-separated 'list' of lower limit(s) to display w-scores in render
         prefix (str): string to use as file prefix
         output_dir (str): path to output directory
         TODO: patient_sex (str): sex of patient ('M' or 'F')
@@ -58,8 +58,8 @@ def get_parser():
         required=True
     )
     parser.add_argument(
-        "--threshold",
-        type=float,
+        "--thresholds",
+        type=str,
         required=True
     )
     parser.add_argument(
@@ -215,8 +215,13 @@ def main():
     # project wscore data onto surface
     logger.info("Projecting w-scores onto surface...")
     schaefer_scale = 'schaefer200x17'  # in case this becomes flexible later
-    render_cmd = "bash -x /opt/rendering/schaeferTableToFigure.sh -f {} -r {} -s 1 -c 'red-yellow' -l {}".format(wscores_csv_path, schaefer_scale, args.threshold)
-    os.system(render_cmd)
+
+    thresholds = args.thresholds.split(' ')
+    for i in thresholds:
+        render_cmd = "bash -x /opt/rendering/schaeferTableToFigure.sh -f {} -r {} -s 1 -c 'red-yellow' -l {} -k 0".format(wscores_csv_path, schaefer_scale, i)
+        logger.info(render_cmd)
+        os.system(render_cmd)
+    logger.info("Done rendering.")
 
 
 if __name__ == "__main__":
