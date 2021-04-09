@@ -8,6 +8,7 @@ Inputs
         ct_image_file (str): path to cortical thickness file in subject space
         t1_image_file (str): path to T1 image
         patient_age (float): age of patient in years
+        threshold (float): lower limit to display w-scores in render
         prefix (str): string to use as file prefix
         output_dir (str): path to output directory
         TODO: patient_sex (str): sex of patient ('M' or 'F')
@@ -16,7 +17,6 @@ Inputs
 Contains the following functions:
     * get_parser - Creates an argument parser with appropriate input
     * get_vals - Generates a csv containing mean, median, etc. for cortical thickness outcomes.
-    * render_image - Renders a w-score visualization in subject space
     * main - Main function of the script
 
 
@@ -39,17 +39,14 @@ def get_parser():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--label_index_file",
-        # help="path to csv indexing labels (e.g. V1 is 1)",
         required=True
     )
     parser.add_argument(
         "--label_image_file",
-        # help="path to segmentation image in subject space",
         required=True
     )
     parser.add_argument(
         "--ct_image_file",
-        # help="path to cortical thickness file in subject space",
         required=True
     )
     parser.add_argument(
@@ -58,12 +55,15 @@ def get_parser():
     parser.add_argument(
         "--patient_age",
         type=float,
-        # help="age of patient in years",
+        required=True
+    )
+    parser.add_argument(
+        "--threshold",
+        type=float,
         required=True
     )
     parser.add_argument(
         "--prefix",
-        # help="string to use as file prefix",
         required=True
     )
     parser.add_argument(
@@ -129,43 +129,43 @@ def get_vals(label_index_file, label_image_file, ct_image_file):
     return labs_df_melt
 
 
-def render_image(wscore_dataframe, label_img, working_dir, prefix, output_dir):
-    """
-    Render an image in subject space with the w-score in place of the corresponding label number at the voxel level
-
-    Args:
-        wscore_dataframe (DataFrame) - Pandas DataFrame containing the w-score for each label for the patient
-        label_img (str): path to the label image file
-        working_dir (str): directory to do calculations in
-        prefix (str): string to use as file prefix
-        output_dir (str): directory to save outputs to
-    Returns
-
-    """
-    # loop through rows for ROI index (lbli) and wscore
-    # use fslmaths to convert label index numbers to corresponding w-score for all voxels in ROI
-    for index, row in wscore_dataframe.iterrows():
-        wscore = row['w-score']
-        lbli = int(row['label_number'])
-        # create temporary image for each ROI with w-score as value
-        tmp_output = os.path.join(working_dir, 'tmp{}.nii.gz'.format(lbli))
-        cmd = "fslmaths '{0}' -thr {1} -uthr {2} -div {3} -mul {4} '{5}'".format(label_img, lbli - .5, lbli + .5, lbli, wscore,
-                                                                                 tmp_output)
-        print(cmd)
-        os.system(cmd)
-
-    # merge all temporary ROI images together
-    image_list = glob.glob(os.path.join(working_dir, "tmp*.nii.gz"))
-    images_str = ' -add '.join(
-        '"{0}"'.format(img) for img in image_list)  # string paths together, with single quotes around file paths
-    cmd2 = "fslmaths {} {}/{}_wscore_img.nii.gz".format(images_str, output_dir, prefix)
-    print(cmd2)
-    os.system(cmd2)
-
-    # remove temporary files
-    cmd3 = "rm '{}'/tmp*.nii.gz".format(working_dir)
-    print(cmd3)
-    os.system(cmd3)
+# def render_image(wscore_dataframe, label_img, working_dir, prefix, output_dir):
+#     """
+#     Render an image in subject space with the w-score in place of the corresponding label number at the voxel level
+#
+#     Args:
+#         wscore_dataframe (DataFrame) - Pandas DataFrame containing the w-score for each label for the patient
+#         label_img (str): path to the label image file
+#         working_dir (str): directory to do calculations in
+#         prefix (str): string to use as file prefix
+#         output_dir (str): directory to save outputs to
+#     Returns
+#
+#     """
+#     # loop through rows for ROI index (lbli) and wscore
+#     # use fslmaths to convert label index numbers to corresponding w-score for all voxels in ROI
+#     for index, row in wscore_dataframe.iterrows():
+#         wscore = row['w-score']
+#         lbli = int(row['label_number'])
+#         # create temporary image for each ROI with w-score as value
+#         tmp_output = os.path.join(working_dir, 'tmp{}.nii.gz'.format(lbli))
+#         cmd = "fslmaths '{0}' -thr {1} -uthr {2} -div {3} -mul {4} '{5}'".format(label_img, lbli - .5, lbli + .5, lbli, wscore,
+#                                                                                  tmp_output)
+#         print(cmd)
+#         os.system(cmd)
+#
+#     # merge all temporary ROI images together
+#     image_list = glob.glob(os.path.join(working_dir, "tmp*.nii.gz"))
+#     images_str = ' -add '.join(
+#         '"{0}"'.format(img) for img in image_list)  # string paths together, with single quotes around file paths
+#     cmd2 = "fslmaths {} {}/{}_wscore_img.nii.gz".format(images_str, output_dir, prefix)
+#     print(cmd2)
+#     os.system(cmd2)
+#
+#     # remove temporary files
+#     cmd3 = "rm '{}'/tmp*.nii.gz".format(working_dir)
+#     print(cmd3)
+#     os.system(cmd3)
 
 
 def main():
@@ -201,22 +201,22 @@ def main():
     wscore_df = pd.DataFrame(data=d)
     # add actual ROI names to wscore spreadsheet
     wscore_df.insert(1, "label_full_name", pt_data['label_full_name'], True)
-    wscore_df.to_csv(os.path.join(output_dir, args.prefix + "_wscores.csv"), index=False)
+    wscores_csv_path = os.path.join(output_dir, args.prefix + "_wscores.csv")
+    wscore_df.to_csv(wscores_csv_path, index=False)
 
-    # render an image
-    logger.info("Rendering a w-score image...")
-    working_dir = os.path.join(output_dir, 'work')
-    os.makedirs(working_dir, exist_ok=True)
-    render_image(wscore_df, args.label_image_file, working_dir, args.prefix, output_dir)
-
-    # generate report
-    logger.info("Generating html report...")
-    os.system("python /opt/scripts/generate_report.py --work_dir {} --prefix {} --bg_img {}".format(output_dir, args.prefix, args.t1_image_file))
-    logger.info("python /opt/scripts/generate_report.py --work_dir {} --prefix {} --bg_img {}".format(output_dir, args.prefix, args.t1_image_file))
-    logger.info("Script complete.")
-
-    # delete work folder
-    os.system("rm -rf {}".format(working_dir))
+    # Render an image
+    logger.info("Rendering w-score image...")
+    # convert csv to text
+    logger.info("Converting w-scores csv to space-separated txt file.")
+    txt_output_root = os.path.splitext(wscores_csv_path)[0]
+    convert_cmd = "cat {} | tr ',' ' ' > {}.txt".format(wscores_csv_path, txt_output_root)
+    logger.info(convert_cmd)
+    os.system(convert_cmd)
+    # project wscore data onto surface
+    logger.info("Projecting w-scores onto surface...")
+    schaefer_scale = 'schaefer200x17'  # in case this becomes flexible later
+    render_cmd = "bash -x /opt/rendering/schaeferTableToFigure.sh -f {} -r {} -s 1 -c 'red-yellow' -l {}".format(wscores_csv_path, schaefer_scale, args.threshold)
+    os.system(render_cmd)
 
 
 if __name__ == "__main__":

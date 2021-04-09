@@ -17,6 +17,7 @@ RUN apt-get update && \
                     zip \
                     unzip \
                     nano \
+                    libglu1 \
                     default-jdk \
                     git && \
     curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
@@ -25,31 +26,31 @@ RUN apt-get update && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install FSL
-ENV FSLDIR="/usr/share/fsl"
-RUN apt-get update -qq \
-  && apt-get install -y -q --no-install-recommends \
-         bc \
-         dc \
-         file \
-         libfontconfig1 \
-         libfreetype6 \
-         libgl1-mesa-dev \
-         libglu1-mesa-dev \
-         libgomp1 \
-         libice6 \
-         libxcursor1 \
-         libxft2 \
-         libxinerama1 \
-         libxrandr2 \
-         libxrender1 \
-         libxt6 \
-         wget \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-  && echo "Downloading FSL ..." \
-  && mkdir -p /usr/share/fsl \
-  && curl -fsSL --retry 5 https://fsl.fmrib.ox.ac.uk/fsldownloads/fsl-5.0.9-centos6_64.tar.gz \
-  | tar -xz -C /usr/share/fsl --strip-components 1
+#ENV FSLDIR="/usr/share/fsl"
+#RUN apt-get update -qq \
+#  && apt-get install -y -q --no-install-recommends \
+#         bc \
+#         dc \
+#         file \
+#         libfontconfig1 \
+#         libfreetype6 \
+#         libgl1-mesa-dev \
+#         libglu1-mesa-dev \
+#         libgomp1 \
+#         libice6 \
+#         libxcursor1 \
+#         libxft2 \
+#         libxinerama1 \
+#         libxrandr2 \
+#         libxrender1 \
+#         libxt6 \
+#         wget \
+#  && apt-get clean \
+#  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+#  && echo "Downloading FSL ..." \
+#  && mkdir -p /usr/share/fsl \
+#  && curl -fsSL --retry 5 https://fsl.fmrib.ox.ac.uk/fsldownloads/fsl-5.0.9-centos6_64.tar.gz \
+#  | tar -xz -C /usr/share/fsl --strip-components 1
 
 ENV PATH="${FSLDIR}/bin:$PATH"
 ENV FSLOUTPUTTYPE="NIFTI_GZ"
@@ -88,22 +89,38 @@ RUN pip install --no-cache flywheel-sdk==12.4.0 \
  && pip install --no-cache numpy==1.20.1
 
 
-
 # ENV C3DDIR="/usr/share/c3d/bin"
 # #RUN mkdir ${C3DDIR}
 # COPY resources/c3d/bin ${C3DDIR}/
 # ENV PATH="${C3DDIR}:$PATH"
 
+# Install workbench
+ENV WBPATH=/usr/share/workbench
+RUN curl -ssL -o ${WBPATH}.zip "https://www.humanconnectome.org/storage/app/media/workbench/workbench-linux64-v1.5.0.zip"
+RUN unzip ${WBPATH}.zip -d /usr/share
+ENV PATH=$WBPATH/bin_linux64:$PATH
+
+#RUN apt-get update && \
+#    apt-get install -y kmod \
+#                       fuse
+
+
+# Install ImageMagick
+#COPY resources/magick /usr/local/bin/magick
+#RUN chmod 777 /usr/local/bin/magick
+##RUN modprobe fuse
+
 RUN mkdir /opt/scripts
 COPY run.py /opt/scripts/run.py
-COPY generate_report.py /opt/scripts/generate_report.py
 RUN chmod +x /opt/scripts/*
 
 RUN mkdir -p /opt/labelset
 COPY labelset /opt/labelset
 
-RUN mkdir -p /opt/html_templates
-COPY html_templates /opt/html_templates
+RUN mkdir -p /opt/rendering
+COPY rendering /opt/rendering
+RUN chmod =x /opt/rendering/*
+
 
 # Set the entrypoint
 ENTRYPOINT ["python /opt/scripts/run.py"]
