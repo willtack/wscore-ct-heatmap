@@ -71,13 +71,8 @@ exit 1
 
 fi
 
-# module load R/3.2.5
-# module load workbench/1.4.2
-# module load ImageMagick/6.8.9-6
-
-# basedir=/project/ftdc_pipeline/tools/lausanneRender/
-basedir=/home/will/Projects/rendering
-wbdir=/usr/local/workbench/bin_linux64
+basedir=/opt/rendering
+wbdir=/usr/share/workbench/bin_linux64
 
 #Default variables
 height=880
@@ -93,7 +88,7 @@ min=""
 max=""
 zrro=0
 underlayfile=""
-template=${basedir}/data/lausanne_rendering.scene ###???????
+template=${basedir}/data/lausanne_rendering.scene
 lausannescale=""
 bin="0"
 invert="0"
@@ -396,7 +391,7 @@ elif [[ $views == "m" ]] ; then
 fi
 
 # finally
-${wbdir}/wb_command -show-scene ${fstem}.scene $scene ${fstem}.png $width $height
+${wbdir}/wb_command -show-scene ${fstem}.scene $scene ${fstem}_${min}.png $width $height
 
 echo
 echo "$fileinput with $lausannescale scaled from $min $max "
