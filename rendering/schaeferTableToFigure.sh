@@ -237,10 +237,8 @@ fstem=$(echo $input | rev | cut -d '/' -f1 | rev )
 fpath=$(echo $input | rev | cut -d '/' -f2- | rev )
 
 # helper script directories
-# rendir="${basedir}/data/surf_lausanne"   ###?????
-# rendir="/project/ftdc_pipeline/tools/schaeferRender/data/"
-rendir="/home/will/Projects/rendering/data"
-otherrendir="/home/will/Projects/rendering/scripts"
+rendir="/opt/rendering/data"
+otherrendir="/opt/rendering/scripts"
 
 if [[ $bin == "1" ]] ; then
   # binarize
@@ -308,8 +306,8 @@ else
 fi
 
 # replace top layers with your new files
-rdummyfile="\/home\/will\/Projects\/rendering\/data\/rh.lausanne33.func.gii"
-ldummyfile="\/home\/will\/Projects\/rendering\/data\/lh.lausanne33.func.gii"
+rdummyfile="\/opt\/rendering\/data\/rh.lausanne33.func.gii"
+ldummyfile="\/opt\/rendering\/data\/lh.lausanne33.func.gii"
 sed "s/${rdummyfile}/rh.${freplace}/g" < $template > ${fstem}.scene
 sed -i "s/${ldummyfile}/lh.${freplace}/g" ${fstem}.scene
 
@@ -356,8 +354,8 @@ fi
 # if underlay then change those
 if [[ -f "lh.${ureplace}" ]] ; then
   scene=$(( $scene + 2 ))
-  rudummyfile="\/home\/will\/Projects\/rendering\/data\/rh.v2lausanne33.func.gii"
-  ludummyfile="\/home\/will\/Projects\/rendering\/data\/lh.v2lausanne33.func.gii"
+  rudummyfile="\/opt\/rendering\/data\/rh.v2lausanne33.func.gii"
+  ludummyfile="\/opt\/rendering\/data\/lh.v2lausanne33.func.gii"
   sed -i "s/${ludummyfile}/lh.${ureplace}/g" ${fstem}.scene
   sed -i "s/${rudummyfile}/rh.${ureplace}/g" ${fstem}.scene
   ${wbdir}/wb_command -metric-palette lh.${ureplace} ${mode} -palette-name Gray_Interp -disp-neg TRUE -disp-pos TRUE -pos-user 0 0 -neg-user 0 0
