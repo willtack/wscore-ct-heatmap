@@ -129,45 +129,6 @@ def get_vals(label_index_file, label_image_file, ct_image_file):
     return labs_df_melt
 
 
-# def render_image(wscore_dataframe, label_img, working_dir, prefix, output_dir):
-#     """
-#     Render an image in subject space with the w-score in place of the corresponding label number at the voxel level
-#
-#     Args:
-#         wscore_dataframe (DataFrame) - Pandas DataFrame containing the w-score for each label for the patient
-#         label_img (str): path to the label image file
-#         working_dir (str): directory to do calculations in
-#         prefix (str): string to use as file prefix
-#         output_dir (str): directory to save outputs to
-#     Returns
-#
-#     """
-#     # loop through rows for ROI index (lbli) and wscore
-#     # use fslmaths to convert label index numbers to corresponding w-score for all voxels in ROI
-#     for index, row in wscore_dataframe.iterrows():
-#         wscore = row['w-score']
-#         lbli = int(row['label_number'])
-#         # create temporary image for each ROI with w-score as value
-#         tmp_output = os.path.join(working_dir, 'tmp{}.nii.gz'.format(lbli))
-#         cmd = "fslmaths '{0}' -thr {1} -uthr {2} -div {3} -mul {4} '{5}'".format(label_img, lbli - .5, lbli + .5, lbli, wscore,
-#                                                                                  tmp_output)
-#         print(cmd)
-#         os.system(cmd)
-#
-#     # merge all temporary ROI images together
-#     image_list = glob.glob(os.path.join(working_dir, "tmp*.nii.gz"))
-#     images_str = ' -add '.join(
-#         '"{0}"'.format(img) for img in image_list)  # string paths together, with single quotes around file paths
-#     cmd2 = "fslmaths {} {}/{}_wscore_img.nii.gz".format(images_str, output_dir, prefix)
-#     print(cmd2)
-#     os.system(cmd2)
-#
-#     # remove temporary files
-#     cmd3 = "rm '{}'/tmp*.nii.gz".format(working_dir)
-#     print(cmd3)
-#     os.system(cmd3)
-
-
 def main():
 
     # Parse command line arguments
@@ -193,7 +154,7 @@ def main():
     logger.info("Calculating w-scores for each region of atlas...")
     pt_age = args.patient_age
     ws_coffs = pd.read_csv('/opt/labelset/ws_coeffs.csv')  # w-score coefficients for norm data
-    wscores = (pt_data.value - ws_coffs.intercept - pt_age*ws_coffs.age_coefficient)/ws_coffs.residual_se
+    wscores = -(pt_data.value - ws_coffs.intercept - pt_age*ws_coffs.age_coefficient)/ws_coffs.residual_se
 
     # save to DataFrame
     logger.info("Saving w-score results to Dataframe and csv...")
@@ -208,19 +169,25 @@ def main():
     logger.info("Rendering w-score image...")
     # convert csv to text
     logger.info("Converting w-scores csv to space-separated txt file.")
-    txt_output_root = os.path.splitext(wscores_csv_path)[0]
-    convert_cmd = "cat {} | tr ',' ' ' > {}.txt".format(wscores_csv_path, txt_output_root)
+    wscores_txt_path = os.path.splitext(wscores_csv_path)[0] + '.txt'
+    # remove middle column (region names) and convert commas to spaces
+    convert_cmd = "cut -d, -f2 --complement {} | tr ',' ' ' > {}".format(wscores_csv_path, wscores_txt_path)
     logger.info(convert_cmd)
     os.system(convert_cmd)
+    os.system("sed -i '1 d' {}".format(wscores_txt_path))
     # project wscore data onto surface
     logger.info("Projecting w-scores onto surface...")
     schaefer_scale = 'schaefer200x17'  # in case this becomes flexible later
 
     thresholds = args.thresholds.split(' ')
     for i in thresholds:
-        render_cmd = "bash -x /opt/rendering/schaeferTableToFigure.sh -f {} -r {} -s 1 -c 'red-yellow' -l {} -k 0".format(wscores_csv_path, schaefer_scale, i)
+        render_cmd = "bash -x /opt/rendering/schaeferTableToFigure.sh -f {} -r {} -s 1 -c 'red-yellow' -l {} -k 0".format(wscores_txt_path, schaefer_scale, i)
         logger.info(render_cmd)
         os.system(render_cmd)
+    # add the full spectrum
+    render_cmd = "bash -x /opt/rendering/schaeferTableToFigure.sh -f {} -r {} -s 1 -c 'red-yellow' -k 0".format(wscores_txt_path, schaefer_scale)
+    logger.info(render_cmd)
+    os.system(render_cmd)
     logger.info("Done rendering.")
 
 
