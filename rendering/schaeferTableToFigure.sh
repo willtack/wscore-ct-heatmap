@@ -323,28 +323,28 @@ fi
 if (( $(echo "$min >= 0" | bc -l) && $(echo "$max > 0" | bc -l) )) ; then
   neg=FALSE
   pos=TRUE
-  ${wbdir}/wb_command -metric-palette lh.${freplace} ${mode} -palette-name ${color} -disp-neg ${neg} -disp-pos ${pos} -pos-user ${min} ${max}
-  ${wbdir}/wb_command -metric-palette rh.${freplace} ${mode} -palette-name ${color} -disp-neg ${neg} -disp-pos ${pos} -pos-user ${min} ${max}
+  ${wbdir}/wb_command -metric-palette lh.${freplace} ${mode} -palette-name ${color}  -thresholding THRESHOLD_TYPE_NORMAL THRESHOLD_TEST_SHOW_INSIDE $min $max -disp-neg ${neg} -disp-pos ${pos} -pos-user ${min} ${max}
+  ${wbdir}/wb_command -metric-palette rh.${freplace} ${mode} -palette-name ${color}  -thresholding THRESHOLD_TYPE_NORMAL THRESHOLD_TEST_SHOW_INSIDE $min $max -disp-neg ${neg} -disp-pos ${pos} -pos-user ${min} ${max}
 elif (( $(echo "$min < 0" | bc -l) && $(echo "$max > 0" | bc -l) )) ; then
   neg=TRUE
   pos=TRUE
-  ${wbdir}/wb_command -metric-palette lh.${freplace} ${mode} -palette-name ${color} -disp-neg ${neg} -disp-pos ${pos} -pos-user ${zrro} ${max} -neg-user ${zrro} ${min}
-  ${wbdir}/wb_command -metric-palette rh.${freplace} ${mode} -palette-name ${color} -disp-neg ${neg} -disp-pos ${pos} -pos-user ${zrro} ${max} -neg-user ${zrro} ${min}
+  ${wbdir}/wb_command -metric-palette lh.${freplace} ${mode} -palette-name ${color}  -thresholding THRESHOLD_TYPE_NORMAL THRESHOLD_TEST_SHOW_INSIDE $min $max -disp-neg ${neg} -disp-pos ${pos} -pos-user ${zrro} ${max} -neg-user ${zrro} ${min}
+  ${wbdir}/wb_command -metric-palette rh.${freplace} ${mode} -palette-name ${color}  -thresholding THRESHOLD_TYPE_NORMAL THRESHOLD_TEST_SHOW_INSIDE $min $max -disp-neg ${neg} -disp-pos ${pos} -pos-user ${zrro} ${max} -neg-user ${zrro} ${min}
 elif (( $(echo "$min > 0" | bc -l) && $(echo "$max < 0" | bc -l) )) ; then
   neg=TRUE
   pos=TRUE
-  ${wbdir}/wb_command -metric-palette lh.${freplace} ${mode} -palette-name ${color} -disp-neg ${neg} -disp-pos ${pos} -pos-user ${zrro} ${max} -neg-user ${zrro} ${max}
-  ${wbdir}/wb_command -metric-palette rh.${freplace} ${mode} -palette-name ${color} -disp-neg ${neg} -disp-pos ${pos} -pos-user ${zrro} ${max} -neg-user ${zrro} ${max}
+  ${wbdir}/wb_command -metric-palette lh.${freplace} ${mode} -palette-name ${color}  -thresholding THRESHOLD_TYPE_NORMAL THRESHOLD_TEST_SHOW_INSIDE $min $max -disp-neg ${neg} -disp-pos ${pos} -pos-user ${zrro} ${max} -neg-user ${zrro} ${max}
+  ${wbdir}/wb_command -metric-palette rh.${freplace} ${mode} -palette-name ${color}  -thresholding THRESHOLD_TYPE_NORMAL THRESHOLD_TEST_SHOW_INSIDE $min $max -disp-neg ${neg} -disp-pos ${pos} -pos-user ${zrro} ${max} -neg-user ${zrro} ${max}
 elif (( $(echo "$min < 0" | bc -l) && $(echo "$max <= 0" | bc -l) )) ; then
   neg=TRUE
   pos=FALSE
-  ${wbdir}/wb_command -metric-palette lh.${freplace} ${mode} -palette-name ${color} -disp-neg ${neg} -disp-pos ${pos} -pos-user ${zrro} ${max} -neg-user ${zrro} ${min}
-  ${wbdir}/wb_command -metric-palette rh.${freplace} ${mode} -palette-name ${color} -disp-neg ${neg} -disp-pos ${pos} -pos-user ${zrro} ${max} -neg-user ${zrro} ${min}
+  ${wbdir}/wb_command -metric-palette lh.${freplace} ${mode} -palette-name ${color}  -thresholding THRESHOLD_TYPE_NORMAL THRESHOLD_TEST_SHOW_INSIDE $min $max -disp-neg ${neg} -disp-pos ${pos} -pos-user ${zrro} ${max} -neg-user ${zrro} ${min}
+  ${wbdir}/wb_command -metric-palette rh.${freplace} ${mode} -palette-name ${color}  -thresholding THRESHOLD_TYPE_NORMAL THRESHOLD_TEST_SHOW_INSIDE $min $max -disp-neg ${neg} -disp-pos ${pos} -pos-user ${zrro} ${max} -neg-user ${zrro} ${min}
 elif (( $(echo "$min == 0" | bc -l) && $(echo "$max == 0" | bc -l) )) ; then
   neg=TRUE
   pos=TRUE
-  ${wbdir}/wb_command -metric-palette lh.${freplace} ${mode} -palette-name ${color} -disp-neg ${neg} -disp-pos ${pos} -pos-user ${zrro} ${max} -neg-user ${zrro} ${min}
-  ${wbdir}/wb_command -metric-palette rh.${freplace} ${mode} -palette-name ${color} -disp-neg ${neg} -disp-pos ${pos} -pos-user ${zrro} ${max} -neg-user ${zrro} ${min}
+  ${wbdir}/wb_command -metric-palette lh.${freplace} ${mode} -palette-name ${color}  -thresholding THRESHOLD_TYPE_NORMAL THRESHOLD_TEST_SHOW_INSIDE $min $max -disp-neg ${neg} -disp-pos ${pos} -pos-user ${zrro} ${max} -neg-user ${zrro} ${min}
+  ${wbdir}/wb_command -metric-palette rh.${freplace} ${mode} -palette-name ${color}  -thresholding THRESHOLD_TYPE_NORMAL THRESHOLD_TEST_SHOW_INSIDE $min $max -disp-neg ${neg} -disp-pos ${pos} -pos-user ${zrro} ${max} -neg-user ${zrro} ${min}
   echo "you have all zeros"
 else
   echo " you broke my logic with your min and max values ...exiting"
@@ -388,8 +388,15 @@ elif [[ $views == "m" ]] ; then
   fi
 fi
 
+# round the minimum for filenaming purposes - WT
+round() {
+echo $(printf %.$2f $(echo "scale=$2;(((10^$2)*$1)+0.5)/(10^$2)" | bc))
+};
+
+fmin=$(round $min 2)
+
 # finally
-${wbdir}/wb_command -show-scene ${fstem}.scene $scene ${fstem}_${min}.png $width $height
+${wbdir}/wb_command -show-scene ${fstem}.scene $scene ${fstem}_${fmin}.png $width $height
 
 echo
 echo "$fileinput with $lausannescale scaled from $min $max "
