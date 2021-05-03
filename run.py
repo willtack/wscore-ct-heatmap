@@ -153,7 +153,7 @@ def main():
     # w-score calculation | outputs a pd DataSeries
     logger.info("Calculating w-scores for each region of atlas...")
     pt_age = args.patient_age
-    ws_coffs = pd.read_csv('/opt/labelset/ws_coeffs.csv')  # w-score coefficients for norm data
+    ws_coffs = pd.read_csv('/opt/labelset/ws_coeffs_03-09-2021.csv')  # w-score coefficients for norm data
     wscores = -(pt_data.value - ws_coffs.intercept - pt_age*ws_coffs.age_coefficient)/ws_coffs.residual_se
 
     # save to DataFrame
@@ -181,11 +181,11 @@ def main():
 
     thresholds = args.thresholds.split(' ')
     for i in thresholds:
-        render_cmd = "bash -x /opt/rendering/schaeferTableToFigure.sh -f {} -r {} -s 1 -c 'red-yellow' -l {} -k 0".format(wscores_txt_path, schaefer_scale, i)
+        render_cmd = "bash -x /opt/rendering/schaeferTableToFigure.sh -f {} -r {} -s 1 -h 4 -c 'red-yellow' -l {} -k 0".format(wscores_txt_path, schaefer_scale, i)
         logger.info(render_cmd)
         os.system(render_cmd)
     # add the full spectrum
-    render_cmd = "bash -x /opt/rendering/schaeferTableToFigure.sh -f {} -r {} -s 1 -c 'red-yellow' -k 0".format(wscores_txt_path, schaefer_scale)
+    render_cmd = "bash -x /opt/rendering/schaeferTableToFigure.sh -f {} -r {} -s 1 -h 4 -c 'red-yellow' -k 0".format(wscores_txt_path, schaefer_scale)
     logger.info(render_cmd)
     os.system(render_cmd)
     logger.info("Done rendering.")
